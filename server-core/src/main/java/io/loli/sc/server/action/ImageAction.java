@@ -60,29 +60,11 @@ public class ImageAction {
 
     @RequestMapping(value = "/list/{page}", method = RequestMethod.GET)
     public String listByUId(@PathVariable(value = "page") int page, Model model, HttpServletRequest request) {
-        if (page == 0) {
-            page = 1;
-        }
-        int firstPosition = (page - 1) * imageService.getMaxResults();
         User user = (User) request.getSession().getAttribute("user");
         if (user == null) {
             return "redirect:/user/login";
         }
         int uid = ((User) request.getSession().getAttribute("user")).getId();
-
-        List<UploadedImage> list = imageService.listByUId(uid, firstPosition, null);
-        int totalCount = imageService.countByUId(uid);
-        int pageCount = (int) Math.ceil((float) totalCount / (float) imageService.getMaxResults());
-        boolean hasLast = page != 1;
-        boolean hasNext = page != pageCount;
-        int current = page;
-        request.setAttribute("totalCount", totalCount);
-        request.setAttribute("pageCount", pageCount);
-        request.setAttribute("hasLast", hasLast);
-        request.setAttribute("hasNext", hasNext);
-        request.setAttribute("currentPage", current);
-        request.setAttribute("count", totalCount);
-        model.addAttribute("imgList", list);
         if (user != null) {
             user = userService.findById(user.getId());
             model.addAttribute("tagList", user.getTagList());
