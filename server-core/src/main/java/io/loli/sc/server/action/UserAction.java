@@ -3,7 +3,6 @@ package io.loli.sc.server.action;
 import io.loli.sc.server.entity.Social;
 import io.loli.sc.server.entity.User;
 import io.loli.sc.server.exception.DBException;
-import io.loli.sc.server.service.LoginStatusService;
 import io.loli.sc.server.service.UserService;
 import io.loli.sc.server.service.social.SocialService;
 

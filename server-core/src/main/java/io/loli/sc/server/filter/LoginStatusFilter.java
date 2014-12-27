@@ -54,19 +54,31 @@ public class LoginStatusFilter implements Filter {
 
                 Cookie[] cookies = req.getCookies();
                 if (cookies != null) {
-                    long count = Arrays.stream(req.getCookies()).filter(c -> c.getName().equals("token")).count();
-                    if (count == 0) {
-                        LoginStatus ls = loginStatusService.findByUId(user.getId());
-                        if (ls == null) {
-                            ls = loginStatusService.getLoginStatusByUId(user.getId());
 
-                            ls.setLastLogin(new Date());
-                            loginStatusService.update(ls);
-                        }
+                    long count = Arrays.stream(req.getCookies()).filter(c -> c.getName().equals("token")).count();
+                    LoginStatus ls = loginStatusService.findByUId(user.getId());
+                    if (ls == null) {
+                        ls = loginStatusService.getLoginStatusByUId(user.getId());
+
+                        ls.setLastLogin(new Date());
+                        loginStatusService.update(ls);
+                    }
+                    if (count == 0) {
                         Cookie cookie = new Cookie("token", ls.getToken());
                         cookie.setMaxAge(3600 * 24 * 365);
                         cookie.setPath("/");
                         res.addCookie(cookie);
+                    } else {
+                        // 如果该用户已经登陆且客户端的token存在，且server的token不存在或者两者不相同时，重新生成一个token
+                        Cookie cookie = Arrays.stream(req.getCookies()).filter(c -> c.getName().equals("token"))
+                            .findFirst().get();
+                        if (!cookie.getValue().equals(ls.getToken())) {
+                            cookie = new Cookie("token", ls.getToken());
+                            cookie.setMaxAge(3600 * 24 * 365);
+                            cookie.setPath("/");
+                            res.addCookie(cookie);
+                        }
+
                     }
                 }
 
