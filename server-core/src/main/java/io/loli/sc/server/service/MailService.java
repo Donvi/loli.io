@@ -30,10 +30,10 @@ public class MailService {
         }
     }
 
-
     private MailSenderInfo buildInfo() {
         MailSenderInfo info = new MailSenderInfo();
-        // 或者 ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        // 或者 ClassLoader classLoader =
+        // Thread.currentThread().getContextClassLoader();
         InputStream in = this.getClass().getResourceAsStream("/mail.properties");
         Properties p = new Properties();
         try {
@@ -48,7 +48,7 @@ public class MailService {
         info.setFromAddress(p.getProperty("from"));
         info.setSenderNickName(p.getProperty("nickname"));
         info.setValidate(true);
-        info.setSubject("感谢注册, 这是您的验证码");
+        info.setSubject("[萝莉图床]感谢注册, 这是您的验证码");
         return info;
     }
 
