@@ -568,6 +568,7 @@
     }
 
     function search() {
+        var gid = getGid();
         reloadImages(gid, page);
         loadPage(gid);
     }

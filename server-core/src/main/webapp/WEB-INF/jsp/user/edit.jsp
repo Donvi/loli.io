@@ -168,19 +168,16 @@
             <label class="col-sm-4 control-label">Github: </label>
             <div class="col-sm-4 form-right-lable">
               <c:if test="${empty github}">
-                <a href="${pageContext.request.contextPath}/social/qq/redirect"><img
+                <a href="${pageContext.request.contextPath}/social/github/redirect"><img
                   src="${pageContext.request.contextPath}/static/img/github-btn.png"></a>
               </c:if>
               <c:if test="${not empty github}">
                 <label> ${github.name}<!-- &nbsp;<a href="${pageContext.request.contextPath}/social/qq/cancel"></a> -->
                 </label>
-
               </c:if>
             </div>
           </div>
-
         </fieldset>
-
       </form>
     </div>
 
