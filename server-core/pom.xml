@@ -290,6 +290,21 @@
             <version>1.0.0</version>
         </dependency>
 
+
+
+
+
+        <dependency>
+            <groupId>org.apache.sirona</groupId>
+            <artifactId>sirona-core</artifactId>
+            <version>0.2-incubating</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sirona</groupId>
+            <artifactId>sirona-reporting</artifactId>
+            <version>0.2-incubating</version>
+            <classifier>classes</classifier>
+        </dependency>
     </dependencies>
 
     <build>

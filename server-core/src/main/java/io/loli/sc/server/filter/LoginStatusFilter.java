@@ -41,6 +41,13 @@ public class LoginStatusFilter implements Filter {
         ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
+
+        String path = req.getServletPath();
+        if (path.contains("monitoring")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         if (req.getServletPath().contains("api")) {
             chain.doFilter(request, response);
             return;
