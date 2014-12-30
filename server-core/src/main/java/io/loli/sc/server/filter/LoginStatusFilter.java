@@ -63,7 +63,16 @@ public class LoginStatusFilter implements Filter {
                 if (cookies != null) {
 
                     long count = Arrays.stream(req.getCookies()).filter(c -> c.getName().equals("token")).count();
-                    LoginStatus ls = loginStatusService.findByUId(user.getId());
+                    Object statusObj = session.getAttribute("status");
+                    LoginStatus ls = null;
+
+                    if (statusObj != null && statusObj instanceof LoginStatus) {
+                        ls = (LoginStatus) statusObj;
+                    } else {
+                        ls = loginStatusService.findByUId(user.getId());
+                        session.setAttribute("status", ls);
+                    }
+
                     if (ls == null) {
                         ls = loginStatusService.getLoginStatusByUId(user.getId());
 
@@ -95,6 +104,8 @@ public class LoginStatusFilter implements Filter {
                 if (cookies != null) {
                     Arrays.stream(req.getCookies()).filter(c -> c.getName().equals("token")).forEach(c -> {
                         User user = loginStatusService.findByToken(c.getValue());
+                        LoginStatus status = user.getLoginStatus();
+                        session.setAttribute("status", status);
                         if (user != null) {
                             session.setAttribute("user", user);
                             // 将该用户的登录时间保存进数据库中去

@@ -10,7 +10,8 @@
       <a href="https://www.upyun.com/" target="_blank">又拍云</a>
     </div>
     <div class="column">
-      <a href="http://www.miitbeian.gov.cn/" target="_blank">苏ICP备14003163号</a>
+      <a href="http://www.miitbeian.gov.cn/" target="_blank">苏ICP备14003163号</a> <a
+        href="${pageContext.request.contextPath}/stat">最近30天统计</a>
     </div>
     <!-- cnzz -->
     <div style="display: none" align=center>
