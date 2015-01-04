@@ -22,6 +22,10 @@ public class AccessStatus implements Serializable {
 
     private int total;
 
+    private int effective;
+
+    private double traffic;
+
     public int getId() {
         return id;
     }
@@ -44,6 +48,22 @@ public class AccessStatus implements Serializable {
 
     public void setDays(String days) {
         this.days = days;
+    }
+
+    public int getEffective() {
+        return effective;
+    }
+
+    public void setEffective(int effective) {
+        this.effective = effective;
+    }
+
+    public double getTraffic() {
+        return traffic;
+    }
+
+    public void setTraffic(double traffic) {
+        this.traffic = traffic;
     }
 
 }

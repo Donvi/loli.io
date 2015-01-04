@@ -104,13 +104,13 @@ public class LoginStatusFilter implements Filter {
                 if (cookies != null) {
                     Arrays.stream(req.getCookies()).filter(c -> c.getName().equals("token")).forEach(c -> {
                         User user = loginStatusService.findByToken(c.getValue());
-                        LoginStatus status = user.getLoginStatus();
-                        session.setAttribute("status", status);
                         if (user != null) {
+                            LoginStatus status = user.getLoginStatus();
+                            session.setAttribute("status", status);
                             session.setAttribute("user", user);
                             // 将该用户的登录时间保存进数据库中去
-                        loginStatusService.updateDate(user);
-                    }
+                            loginStatusService.updateDate(user);
+                        }
                 }   );
                 }
             }

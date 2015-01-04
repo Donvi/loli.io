@@ -47,20 +47,27 @@
         $.post("${pageContext.request.contextPath}/stat/access", function(result) {
             var cat = new Array();
             var data = new Array();
+
+            var effective = new Array();
+            var traffic = new Array();
+
             for (i = 0; i < result.length; i++) {
                 cat.push(result[i].days.substring(4));
                 data.push(result[i].total);
+                effective.push(result[i].effective);
+                traffic.push(result[i].traffic);
+
             }
             $('#container2').highcharts({
                 title : {
-                    text : '图片访问量(不包括CDN)',
+                    text : '访问量',
                 },
                 xAxis : {
                     categories : cat
                 },
                 yAxis : {
                     title : {
-                        text : '图片访问量统计(不包括CDN)'
+                        text : '图片访问量统计'
                     },
                     min : 0,
                 },
@@ -71,9 +78,9 @@
                     borderWidth : 0
                 },
                 series : [ {
-                    name : '图片访问量',
+                    name : '总请求数',
                     data : data
-                } ]
+                }]
             });
 
         });
@@ -87,9 +94,8 @@
     <div class="data">
       <h3>最近30天图片上传量</h3>
       <div id="container"></div>
-      <h3>最近30天图片访问量(不包括CDN)</h3>
+      <h3>最近30天图片访问量</h3>
       <div id="container2"></div>
-
     </div>
 
   </div>
