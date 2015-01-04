@@ -15,7 +15,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Scanner;
 import java.util.Set;
@@ -189,7 +188,7 @@ public class RedirectFilter implements RequestAuthFilter {
                 }
                 final String fip = ip;
                 String ua = request.getHeader(Header.UserAgent);
-                executor.execute(() -> logDao.save(url, ua, referer, fip, new Date()));
+                executor.execute(() -> logDao.save(url, ua, referer, fip));
                 sendOutput(url, result.getValue(), request, response);
             }
 
