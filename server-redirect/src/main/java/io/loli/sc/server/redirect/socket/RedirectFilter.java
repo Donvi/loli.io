@@ -15,8 +15,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,12 +33,6 @@ public class RedirectFilter implements RequestAuthFilter {
     private static final Logger logger = LogManager.getLogger(RedirectHandler.class);
 
     private static final TaskExecutor executor = new TaskExecutor(30);
-
-    private static Set<String> blackList = new LinkedHashSet<String>();
-
-    // blacklist was replaces with nginx
-    {
-    }
 
     private void send404(Response response) {
         response.setStatus(HttpStatus.NOT_FOUND_404);
@@ -108,7 +100,7 @@ public class RedirectFilter implements RequestAuthFilter {
      * 当配置为使用缓存且(未配置exclude或者url不包含exclude字符串)时，使用缓存
      */
     public void filter(final Request request, final Response response) {
-
+        long start = System.currentTimeMillis();
         String referer = request.getHeader(Header.Referer);
 
         try {
@@ -172,6 +164,8 @@ public class RedirectFilter implements RequestAuthFilter {
             e.printStackTrace();
             send404(response);
         }
+        long end = System.currentTimeMillis();
+        logger.info("本次请求结束，消耗时间: " + (end - start) + " ms");
 
     }
 
