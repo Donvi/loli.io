@@ -5,8 +5,10 @@ import io.loli.sc.server.redirect.bean.Pair;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemManager;
+import org.apache.commons.vfs2.VFS;
 
 public interface Cache {
 
@@ -43,21 +45,17 @@ public interface Cache {
      * @throws IOException 当IO出现问题时抛出异常
      */
     default public Pair<Long, InputStream> get(String urlString) throws IOException {
+
         if (urlString.equalsIgnoreCase("")) {
             return null;
         } else if (urlString.toLowerCase().startsWith("http://")) {
         } else {
             return null;
         }
-        HttpURLConnection httpConnection;
-        URL url = new URL(urlString);
-        httpConnection = (HttpURLConnection) url.openConnection();
-        httpConnection.setRequestMethod("GET");
-        httpConnection.setDoOutput(true);
-        httpConnection.setDoInput(true);
-        int code = httpConnection.getResponseCode();
-        if (code == HttpURLConnection.HTTP_OK) {
-            return new Pair<Long, InputStream>(httpConnection.getContentLengthLong(), httpConnection.getInputStream());
+        final FileSystemManager mgr = VFS.getManager();
+        final FileObject file = mgr.resolveFile(urlString);
+        if (file.exists()) {
+            return new Pair<>(file.getContent().getSize(), file.getContent().getInputStream());
         } else {
             return null;
         }
@@ -72,9 +70,9 @@ public interface Cache {
      */
     default public byte[] inputStreamToByte(InputStream is) throws IOException {
         ByteArrayOutputStream bytestream = new ByteArrayOutputStream();
-        int ch;
-        while ((ch = is.read()) != -1) {
-            bytestream.write(ch);
+        byte d[] = new byte[1024];
+        while (is.read(d) != -1) {
+            bytestream.write(d);
         }
         byte data[] = bytestream.toByteArray();
         bytestream.close();

@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.LinkedHashSet;
-import java.util.Scanner;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -39,21 +38,8 @@ public class RedirectFilter implements RequestAuthFilter {
 
     private static Set<String> blackList = new LinkedHashSet<String>();
 
+    // blacklist was replaces with nginx
     {
-        try (InputStream is = this.getClass().getResourceAsStream("/blacklist.txt");) {
-            @SuppressWarnings("resource")
-            Scanner scanner = new Scanner(is);
-            while (scanner.hasNextLine()) {
-                String str = scanner.nextLine();
-                if (str != null && !"".equals(str.trim())) {
-                    blackList.add(str);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            logger.error(e);
-            e.printStackTrace();
-        }
     }
 
     private void send404(Response response) {
@@ -69,11 +55,13 @@ public class RedirectFilter implements RequestAuthFilter {
             }
 
         } catch (IOException e) {
+            e.printStackTrace();
             logger.error(e);
         }
     }
 
     public void sendOutput(String url, String contentType, Request req, Response resp) {
+
         InputStream input = null;
 
         try {
@@ -89,7 +77,6 @@ public class RedirectFilter implements RequestAuthFilter {
                 input = pair.getValue();
                 total = pair.getKey();
             }
-
             if ((!"".equals(contentType)) && null != contentType) {
                 resp.setContentType(contentType);
             }
@@ -114,6 +101,7 @@ public class RedirectFilter implements RequestAuthFilter {
                 }
             }
         }
+
     }
 
     /*
@@ -122,18 +110,6 @@ public class RedirectFilter implements RequestAuthFilter {
     public void filter(final Request request, final Response response) {
 
         String referer = request.getHeader(Header.Referer);
-
-        // Do with black list
-        if (referer != null && !referer.trim().equals("") && !blackList.isEmpty()) {
-
-            for (String site : blackList) {
-                if (referer.startsWith(site)) {
-                    logger.warn("该网址被禁止访问, referer是" + referer);
-                    send403(response);
-                    return;
-                }
-            }
-        }
 
         try {
             String code = request.getRequestURI();
@@ -212,6 +188,7 @@ public class RedirectFilter implements RequestAuthFilter {
             }
 
         } catch (IOException e) {
+            e.printStackTrace();
             logger.error(e);
         }
     }

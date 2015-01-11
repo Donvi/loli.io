@@ -69,6 +69,7 @@ public class ByteCache implements Cache {
             dataMap.put(path, bytes);
             refreshCache();
         } catch (IOException e) {
+            e.printStackTrace();
             logger.error(e);
         }
         return bytes;

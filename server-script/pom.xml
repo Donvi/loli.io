@@ -39,7 +39,7 @@
                 <artifactId>maven-source-plugin</artifactId>
                 <version>2.2.1</version>
                 <executions>
-                    <execution>
+              jar      <execution>
                         <id>attach-sources</id>
                         <goals>
                             <goal>jar</goal>
@@ -77,7 +77,7 @@
                             <goal>compile</goal>
                             <goal>generateTestStubs</goal>
                             <goal>testCompile</goal>
-                        </goals>
+                        </goals>jar
                     </execution>
                 </executions>
             </plugin>

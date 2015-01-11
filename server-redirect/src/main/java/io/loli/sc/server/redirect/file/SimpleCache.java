@@ -69,6 +69,7 @@ public class SimpleCache implements Cache {
             if (!Files.exists(root))
                 Files.createDirectory(root);
         } catch (IOException e) {
+            e.printStackTrace();
             logger.error(e);
             throw new RuntimeException(e);
         }
@@ -92,6 +93,7 @@ public class SimpleCache implements Cache {
             logger.info("将" + path + "写入缓存");
             refreshCache();
         } catch (IOException e) {
+            e.printStackTrace();
             logger.error(e);
         }
         return bytes;
@@ -149,9 +151,6 @@ public class SimpleCache implements Cache {
     public byte[] getBytes(String path) {
         // 生成文件名
         String fileName = path.substring(path.lastIndexOf("/") + 1);
-        if (fileName.contains(".")) {
-            fileName = fileName.substring(0, fileName.indexOf("."));
-        }
         Path p = root.resolve(fileName);
 
         byte[] bytes = null;
@@ -166,6 +165,7 @@ public class SimpleCache implements Cache {
         try (InputStream is = Files.newInputStream(p);) {
             bytes = inputStreamToByte(is);
         } catch (IOException e) {
+            e.printStackTrace();
             logger.error(e);
         }
         return bytes;
@@ -186,6 +186,7 @@ public class SimpleCache implements Cache {
             try {
                 result = Files.getLastModifiedTime(path1).compareTo(Files.getLastModifiedTime(path2));
             } catch (Exception e) {
+                e.printStackTrace();
                 logger.error(e);
                 result = 0;
             }
