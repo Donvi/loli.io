@@ -146,12 +146,8 @@ public class UploadedImageService {
     }
 
     public boolean checkExists(String code) {
-        List<UploadedImage> result = ud.checkExists(code);
-        if (result.isEmpty()) {
-            return false;
-        } else {
-            return true;
-        }
+        int count = ud.checkExistsByCode(code);
+        return count != 0;
     }
 
     public UploadedImage findByCode(String redirectCode) {
