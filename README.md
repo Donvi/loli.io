@@ -6,7 +6,7 @@
 一个使用阿里云OSS/又拍云/七牛云作为存储的图床~还处于开发中
 欢迎使用https://loli.io
 
-> 如果在部署过程中遇到任何疑问，欢迎提交issue
+> 以下内容已过期，建图床请访问 https://github.com/chocotan/lolibox
 
 ### 运行环境
 1. Java 1.8
