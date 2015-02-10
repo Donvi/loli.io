@@ -28,6 +28,9 @@ public abstract class StorageUploader {
             uploader = new UpStorageUploader(bucket.getAccessKeyId(), bucket.getAccessKeySecret(),
                 bucket.getEndPoint(), bucket.getName());
             break;
+        case StorageBucket.LOCAL_TYPE:
+            uploader = new LocalStorageUploader(bucket.getEndPoint());
+            break;
         }
         return uploader;
     }

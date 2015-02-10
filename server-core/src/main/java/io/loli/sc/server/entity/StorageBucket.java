@@ -48,6 +48,7 @@ public class StorageBucket implements Serializable {
     public static final String IMG_TYPE = "image";
     public static final String FILE_TYPE = "file";
     public static final String UP_TYPE = "up";
+    public static final String LOCAL_TYPE = "local";
 
     public int getId() {
         return id;

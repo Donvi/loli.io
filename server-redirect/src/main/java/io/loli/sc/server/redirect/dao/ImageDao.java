@@ -13,9 +13,9 @@ import org.apache.logging.log4j.Logger;
 import com.mysql.jdbc.StringUtils;
 
 public class ImageDao {
-    private static final String SQL = "select s.endpoint, u.redirect_code,u.content_type from uploaded_image as u,storage_bucket as s where u.redirect_code=? and u.del_flag=false and u.bucket_id=s.id";
-    private static final String SQL_LIKE = "select s.endpoint, u.redirect_code,u.content_type from uploaded_image as u,storage_bucket as s where u.redirect_code like ? and u.del_flag=false and u.bucket_id=s.id";
-    private static final String SQUARE_SQL = "select s.endpoint, u.small_square_name,u.content_type from uploaded_image as u,storage_bucket as s where u.redirect_code=? and u.del_flag=false and u.bucket_id=s.id";
+    private static final String SQL = "select s.internal_url, u.redirect_code,u.content_type from uploaded_image as u,storage_bucket as s where u.redirect_code=? and u.del_flag=false and u.bucket_id=s.id";
+    private static final String SQL_LIKE = "select s.internal_url, u.redirect_code,u.content_type from uploaded_image as u,storage_bucket as s where u.redirect_code like ? and u.del_flag=false and u.bucket_id=s.id";
+    private static final String SQUARE_SQL = "select s.internal_url, u.small_square_name,u.content_type from uploaded_image as u,storage_bucket as s where u.redirect_code=? and u.del_flag=false and u.bucket_id=s.id";
 
     private static final Logger logger = LogManager.getLogger(ImageDao.class);
 
