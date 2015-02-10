@@ -85,6 +85,11 @@ public class UploadedImageDao {
         return em.createQuery("from UploadedImage where generatedCode=:code", UploadedImage.class)
             .setParameter("code", code).getResultList();
     }
+    
+    public int countByCode(String code){
+        return em.createQuery("select count(*) from UploadedImage where generatedCode=:code", Integer.class)
+            .setParameter("code", code).getSingleResult();
+    }
 
     public List<UploadedImage> findByCode(String generatedCode) {
         return em.createQuery("from UploadedImage where generatedCode=:code and delFlag=false", UploadedImage.class)
