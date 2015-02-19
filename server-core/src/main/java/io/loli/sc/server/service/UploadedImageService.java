@@ -146,7 +146,7 @@ public class UploadedImageService {
     }
 
     public boolean checkExists(String code) {
-        int count = ud.checkExistsByCode(code);
+        int count = ud.countByCode(code);
         return count != 0;
     }
 
@@ -233,8 +233,7 @@ public class UploadedImageService {
     public int countByGalIdAndUId(int id, Integer gid) {
         return ud.countByGalIdAndUId(id, gid).intValue();
     }
-    
-    
+
     public int countByGalIdAndUId(int id, Integer gid, String name) {
         return ud.countByGalIdAndUId(id, gid, name).intValue();
     }

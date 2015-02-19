@@ -29,7 +29,8 @@
       </c:if>
       <div class="login-form">
         <h2>登录</h2>
-        <form class="form-horizontal" action="login" role="form" method="POST" onsubmit="return md5password();">
+        <form class="form-horizontal" action="${pageContext.request.contextPath}/user/login" role="form" method="POST"
+          onsubmit="return md5password();">
           <div class="form-group">
             <label for="user-email" class="col-sm-4 control-label">邮箱</label>
             <div class="col-sm-4">
@@ -45,6 +46,13 @@
             </div>
             <span class="label label-danger" id="password_error"></span>
           </div>
+          <!-- <div class="form-group">
+            <label class="col-sm-4 control-label"></label>
+            <div class="col-sm-4">
+              <label><input type="checkbox" name="_spring_security_remember_me">记住我</label>
+            </div>
+            <span class="label label-danger" id="password_error"></span>
+          </div> -->
           <div class="form-group">
             <div class="col-sm-offset-4 col-sm-6">
               <button type="submit" class="btn btn-primary">登录</button>
@@ -59,8 +67,14 @@
                 src="${pageContext.request.contextPath}/static/img/github-btn.png"></a>
             </div>
           </div>
-          <input type="hidden" id="password_md5" name="password">
-
+          <input type="hidden" id="password_md5" name="password"> <input type="hidden"
+            name="${_csrf.parameterName}" value="${_csrf.token}" />
+          <%-- <c:if test="${not empty SPRING_SECURITY_LAST_EXCEPTION}">
+            <font color="red"> Your login attempt was not successful due to <br />
+            <br /> <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}" />.
+            </font>
+          </c:if>
+ --%>
         </form>
       </div>
     </div>
