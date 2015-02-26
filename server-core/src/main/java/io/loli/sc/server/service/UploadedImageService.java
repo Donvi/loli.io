@@ -3,6 +3,7 @@ package io.loli.sc.server.service;
 import io.loli.sc.server.dao.GalleryDao;
 import io.loli.sc.server.dao.UploadedImageDao;
 import io.loli.sc.server.entity.Gallery;
+import io.loli.sc.server.entity.StorageBucket;
 import io.loli.sc.server.entity.UploadedImage;
 import io.loli.sc.server.entity.User;
 import io.loli.sc.server.storage.StorageUploader;
@@ -55,11 +56,10 @@ public class UploadedImageService {
     @Transactional
     public void delete(int id) {
         UploadedImage image = this.findById(id);
-        // StorageBucket sb = image.getStorageBucket();
-        // StorageUploader.newInstance(sb).delete(image.getPath().substring(image.getPath().lastIndexOf("/")
-        // + 1));
-        // System.out.println(image.getPath().substring(image.getPath().indexOf("/")
-        // + 1));
+        StorageBucket sb = image.getStorageBucket();
+        StorageUploader.newInstance(sb)
+                .delete(image.getPath().substring(
+                        image.getPath().lastIndexOf("/") + 1));
         image.setDelFlag(true);
     }
 
@@ -82,38 +82,51 @@ public class UploadedImageService {
     /**
      * 分页查询出指定用户的截图列表
      * 
-     * @param u_id 用户id
-     * @param firstPosition 初始位置
-     * @param maxResults 每页的最大数量
-     * @param name 图片名
+     * @param u_id
+     *            用户id
+     * @param firstPosition
+     *            初始位置
+     * @param maxResults
+     *            每页的最大数量
+     * @param name
+     *            图片名
      * @return 截图列表
      */
-    public List<UploadedImage> listByUId(int u_id, int firstPosition, int maxResults, String name) {
+    public List<UploadedImage> listByUId(int u_id, int firstPosition,
+            int maxResults, String name) {
         return ud.listByUId(u_id, firstPosition, maxResults, name);
     }
 
     /**
      * 不包含分页参数的查询，默认查询出20行
      * 
-     * @param u_id 用户id
-     * @param firstPosition 开始位置
-     * @param name 图片名
+     * @param u_id
+     *            用户id
+     * @param firstPosition
+     *            开始位置
+     * @param name
+     *            图片名
      * @return 截图列表
      */
-    public List<UploadedImage> listByUId(int u_id, int firstPosition, String name) {
+    public List<UploadedImage> listByUId(int u_id, int firstPosition,
+            String name) {
         return this.listByUId(u_id, firstPosition, maxResults, name);
     }
 
-    public List<UploadedImage> listByUIdAndFileName(int u_id, String fileName, int firstPosition, Integer tag) {
-        return this.listByUIdAndFileName(u_id, fileName, firstPosition, maxResults, tag);
+    public List<UploadedImage> listByUIdAndFileName(int u_id, String fileName,
+            int firstPosition, Integer tag) {
+        return this.listByUIdAndFileName(u_id, fileName, firstPosition,
+                maxResults, tag);
     }
 
-    public List<UploadedImage> listByUIdAndFileName(int u_id, String fileName, int firstPosition, int maxResults,
-        Integer tag) {
+    public List<UploadedImage> listByUIdAndFileName(int u_id, String fileName,
+            int firstPosition, int maxResults, Integer tag) {
         if (tag == 0 || tag == null) {
-            return ud.listByUIdAndFileName(u_id, fileName, firstPosition, maxResults);
+            return ud.listByUIdAndFileName(u_id, fileName, firstPosition,
+                    maxResults);
         } else {
-            return ud.listByUIdAndFileName(u_id, fileName, firstPosition, maxResults, tag);
+            return ud.listByUIdAndFileName(u_id, fileName, firstPosition,
+                    maxResults, tag);
         }
     }
 
@@ -146,7 +159,7 @@ public class UploadedImageService {
     }
 
     public boolean checkExists(String code) {
-        int count = ud.countByCode(code);
+        long count = ud.countByCode(code);
         return count != 0;
     }
 
@@ -160,30 +173,39 @@ public class UploadedImageService {
     }
 
     @Transactional
-    public void updateThumbnail(UploadedImage image, File file, StorageUploader uploader) {
-        String format = file.getName().contains(".") ? file.getName().substring(file.getName().lastIndexOf(".") + 1)
-            : "png";
+    public void updateThumbnail(UploadedImage image, File file,
+            StorageUploader uploader) {
+        String format = file.getName().contains(".") ? file.getName()
+                .substring(file.getName().lastIndexOf(".") + 1) : "png";
 
         try {
             String tempDir = System.getProperty("java.io.tmpdir");
-            File f0 = new File(tempDir, image.getGeneratedCode() + "q." + format);
-            toFile(ThumbnailUtil.cutSqureWithResizeSmall(new BufferedInputStream(new FileInputStream(file)), format),
-                f0);
+            File f0 = new File(tempDir, image.getGeneratedCode() + "q."
+                    + format);
+            toFile(ThumbnailUtil.cutSqureWithResizeSmall(
+                    new BufferedInputStream(new FileInputStream(file)), format),
+                    f0);
             uploader.upload(f0, image.getContentType());
             image.setSmallSquareName(f0.getName());
 
-            File f1 = new File(tempDir, image.getGeneratedCode() + "s." + format);
-            toFile(ThumbnailUtil.resizeSmall(new BufferedInputStream(new FileInputStream(file)), format), f1);
+            File f1 = new File(tempDir, image.getGeneratedCode() + "s."
+                    + format);
+            toFile(ThumbnailUtil.resizeSmall(new BufferedInputStream(
+                    new FileInputStream(file)), format), f1);
             uploader.upload(f1, image.getContentType());
             image.setSmallName(f1.getName());
 
-            File f2 = new File(tempDir, image.getGeneratedCode() + "m." + format);
-            toFile(ThumbnailUtil.resizeMiddle(new BufferedInputStream(new FileInputStream(file)), format), f2);
+            File f2 = new File(tempDir, image.getGeneratedCode() + "m."
+                    + format);
+            toFile(ThumbnailUtil.resizeMiddle(new BufferedInputStream(
+                    new FileInputStream(file)), format), f2);
             uploader.upload(f2, image.getContentType());
             image.setMiddleName(f2.getName());
 
-            File f3 = new File(tempDir, image.getGeneratedCode() + "l." + format);
-            toFile(ThumbnailUtil.resizeBig(new BufferedInputStream(new FileInputStream(file)), format), f3);
+            File f3 = new File(tempDir, image.getGeneratedCode() + "l."
+                    + format);
+            toFile(ThumbnailUtil.resizeBig(new BufferedInputStream(
+                    new FileInputStream(file)), format), f3);
             uploader.upload(f3, image.getContentType());
             image.setLargeName(f3.getName());
 
@@ -195,7 +217,8 @@ public class UploadedImageService {
 
     private static void toFile(OutputStream os, File file) {
         try {
-            FileUtils.writeByteArrayToFile(file, ((ByteArrayOutputStream) os).toByteArray());
+            FileUtils.writeByteArrayToFile(file,
+                    ((ByteArrayOutputStream) os).toByteArray());
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -225,7 +248,8 @@ public class UploadedImageService {
         return "";
     }
 
-    public List<UploadedImage> findByGalIdAndUId(int id, Integer gid, int page, String name) {
+    public List<UploadedImage> findByGalIdAndUId(int id, Integer gid, int page,
+            String name) {
         int start = this.getMaxResults() * (page - 1);
         return ud.findByGalIdAndUId(id, gid, start, this.getMaxResults(), name);
     }
@@ -256,7 +280,8 @@ public class UploadedImageService {
                 Integer iid = Integer.parseInt(id.trim());
                 UploadedImage img = ud.findById(iid);
                 if (user.getId() != img.getUser().getId()) {
-                    new IllegalArgumentException("图片" + img.getRedirectCode() + "非该用户所有");
+                    new IllegalArgumentException("图片" + img.getRedirectCode()
+                            + "非该用户所有");
                 }
                 img.setDelFlag(true);
             }
@@ -272,7 +297,8 @@ public class UploadedImageService {
                 Integer iid = Integer.parseInt(id.trim());
                 UploadedImage img = ud.findById(iid);
                 if (user.getId() != img.getUser().getId()) {
-                    new IllegalArgumentException("图片" + img.getRedirectCode() + "非该用户所有");
+                    new IllegalArgumentException("图片" + img.getRedirectCode()
+                            + "非该用户所有");
                 } else {
                     img.setGallery(gal);
                 }
