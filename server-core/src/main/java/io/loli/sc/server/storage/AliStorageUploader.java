@@ -21,14 +21,19 @@ public class AliStorageUploader extends StorageUploader {
     private String bucketName;
     private String uploadUrl;
 
-    public AliStorageUploader(String accessKeyId, String accessKeySecret, String endpoint, String uploadUrl,
-        String bucketName) {
+    // 初始化一个OSSClient
+    private OSSClient client;
+
+    public AliStorageUploader(String accessKeyId, String accessKeySecret,
+            String endpoint, String uploadUrl, String bucketName) {
         super();
         this.accessKeyId = accessKeyId;
         this.accessKeySecret = accessKeySecret;
         this.endpoint = endpoint;
         this.bucketName = bucketName;
         this.uploadUrl = uploadUrl;
+        client = new OSSClient(uploadUrl.trim(), accessKeyId.trim(),
+                accessKeySecret.trim());
     }
 
     @Override
@@ -38,8 +43,7 @@ public class AliStorageUploader extends StorageUploader {
 
     @Override
     public String upload(File file, String contentType) {
-        // 初始化一个OSSClient
-        OSSClient client = new OSSClient(uploadUrl.trim(), accessKeyId.trim(), accessKeySecret.trim());
+
         // 获取指定文件的输入流
         InputStream content = null;
         try {
@@ -72,7 +76,6 @@ public class AliStorageUploader extends StorageUploader {
 
     @Override
     public void delete(String file) {
-        OSSClient client = new OSSClient(uploadUrl, accessKeyId, accessKeySecret);
         client.deleteObject(bucketName, file);
     }
 }
