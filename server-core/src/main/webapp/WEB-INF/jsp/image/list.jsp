@@ -445,7 +445,7 @@
                     name : $("#search-name").val()
                 },
                 function(result) {
-                    var redirectPage = "<spring:message code='redirectPath'/>";
+                    var redirectPage = "<spring:message code='httpsRedirectPath'/>";
                     $(".image-list-table").html("");
                     for (i = 0; i < result.length; i++) {
                         var img = result[i];
