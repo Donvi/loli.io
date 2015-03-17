@@ -143,7 +143,7 @@
       <div class="image-show-left">
         <div>
           <div class="image-show-body">
-            <a target="_blank" href="<spring:message code="httpsRedirectPath"></spring:message>${image.redirectCode}"><img
+            <a target="_blank" href="<spring:message code="redirectPath"></spring:message>${image.redirectCode}"><img
               src="<spring:message code="httpsRedirectPath"></spring:message>${image.redirectCode}" /></a>
             <h3 class="image-show-title">
               <c:out value="${image.originName}"></c:out>
