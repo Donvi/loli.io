@@ -1,8 +1,6 @@
 package io.loli.sc.server.action;
 
-import io.loli.sc.server.entity.AccessStatus;
 import io.loli.sc.server.entity.ImageStatus;
-import io.loli.sc.server.service.AccessStatusService;
 import io.loli.sc.server.service.ImageStatusService;
 
 import java.util.List;
@@ -19,8 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class StatisticAction {
     @Inject
     private ImageStatusService is;
-    @Inject
-    private AccessStatusService as;
 
     @RequestMapping(value = "")
     public String get(Model model) {
@@ -32,12 +28,6 @@ public class StatisticAction {
     @ResponseBody
     public List<ImageStatus> stat() {
         return is.findLast30Days();
-    }
-
-    @RequestMapping(value = "access")
-    @ResponseBody
-    public List<AccessStatus> access() {
-        return as.findLast30Days();
     }
 
 }

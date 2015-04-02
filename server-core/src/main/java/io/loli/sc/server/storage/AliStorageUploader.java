@@ -1,11 +1,15 @@
 package io.loli.sc.server.storage;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.imageio.ImageIO;
 
@@ -78,4 +82,5 @@ public class AliStorageUploader extends StorageUploader {
     public void delete(String file) {
         client.deleteObject(bucketName, file);
     }
+
 }
