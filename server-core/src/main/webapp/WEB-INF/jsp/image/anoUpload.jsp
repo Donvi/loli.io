@@ -174,4 +174,5 @@
 <script src="${pageContext.request.contextPath}/static/ext/uploader/script.js"></script>
 <c:if test="${empty param.weibo}">
   <input type="hidden" id="redirectPath" value="<spring:message code="redirectPath"></spring:message>">
+  <input type="hidden" id="httpsRedirectPath" value="<spring:message code="httpsRedirectPath"></spring:message>">
 </c:if>

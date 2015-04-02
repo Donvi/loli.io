@@ -111,13 +111,10 @@ public class UploadedImageDao {
                         UploadedImage.class).setParameter("code", code)
                 .getResultList();
     }
-
-    public Long countByCode(String code) {
-        return em
-                .createQuery(
-                        "select count(*) from UploadedImage where generatedCode=:code",
-                        Long.class).setParameter("code", code)
-                .getSingleResult();
+    
+    public int countByCode(String code){
+        return em.createQuery("select count(*) from UploadedImage where generatedCode=:code", Long.class)
+            .setParameter("code", code).getSingleResult().intValue();
     }
 
     public List<UploadedImage> findByCode(String generatedCode) {
