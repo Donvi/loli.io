@@ -134,7 +134,7 @@ public class ImageClientUpload {
             } else {
                 imageObj.setUser(userService.findByEmail(email));
             }
-            info.setOriginName(desc);
+            imageObj.setOriginName(desc);
         }
         User user = null;
         if ((user = (User) request.getSession().getAttribute("user")) != null) {
@@ -176,9 +176,9 @@ public class ImageClientUpload {
 
         StorageUploader uploader = StorageUploader.newInstance(imageObj.getStorageBucket());
         imageObj.setPath(uploader.upload(file));
-        info.setOriginName(imageFile.getOriginalFilename());
+        imageObj.setOriginName(imageFile.getOriginalFilename());
 
-        info.setGeneratedName(file.getName());
+        imageObj.setGeneratedName(file.getName());
         imageObj.setRedirectCode(file.getName());
         imageObj.setGeneratedCode(file.getName().contains(".") ? file.getName().substring(0,
             file.getName().indexOf(".")) : file.getName());
@@ -186,9 +186,9 @@ public class ImageClientUpload {
 
         uic.save(imageObj);
         if (imageObj.getUser() == null) {
-            logger.info("匿名上传文件:" + info.getOriginName() + ", 链接为" + imageObj.getPath());
+            logger.info("匿名上传文件:" + imageObj.getOriginName() + ", 链接为" + imageObj.getPath());
         } else {
-            logger.info(imageObj.getUser().getEmail() + "上传文件:" + info.getOriginName() + ", 链接为"
+            logger.info(imageObj.getUser().getEmail() + "上传文件:" + imageObj.getOriginName() + ", 链接为"
                 + imageObj.getPath());
         }
 
@@ -267,9 +267,9 @@ public class ImageClientUpload {
 
             StorageUploader uploader = StorageUploader.newInstance(imageObj.getStorageBucket());
             imageObj.setPath(uploader.upload(file));
-            info.setOriginName(file.getName());
+            imageObj.setOriginName(file.getName());
 
-            info.setGeneratedName(file.getName());
+            imageObj.setGeneratedName(file.getName());
             imageObj.setRedirectCode(file.getName());
             imageObj.setGeneratedCode(file.getName().contains(".") ? file.getName().substring(0,
                 file.getName().indexOf(".")) : file.getName());
@@ -278,9 +278,9 @@ public class ImageClientUpload {
 
             uic.save(imageObj);
             if (imageObj.getUser() == null) {
-                logger.info("匿名上传文件:" + info.getOriginName() + ", 链接为" + imageObj.getPath());
+                logger.info("匿名上传文件:" + imageObj.getOriginName() + ", 链接为" + imageObj.getPath());
             } else {
-                logger.info(imageObj.getUser().getEmail() + "上传文件:" + info.getOriginName() + ", 链接为"
+                logger.info(imageObj.getUser().getEmail() + "上传文件:" + imageObj.getOriginName() + ", 链接为"
                     + imageObj.getPath());
             }
             return "{\"origin\":\"" + path + "\",\"error\":\"" + "\",\"redirect\":\"" + imageObj.getRedirectCode()

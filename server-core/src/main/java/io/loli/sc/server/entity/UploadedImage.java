@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,8 +25,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "uploaded_image")
 @NamedQueries(value = {
         @NamedQuery(name = "UploadedImage.listByUId", query = "SELECT u FROM UploadedImage u  WHERE u.user.id=:u_id and u.delFlag=false order by u.date desc"),
-        @NamedQuery(name = "UploadedImage.listByUIdAndFileName", query = "SELECT u FROM UploadedImage u  WHERE u.info.originName like :file_name and u.user.id=:u_id and u.delFlag=false order by u.date desc"),
-        @NamedQuery(name = "UploadedImage.listByUIdAndFileNameAndTag", query = "SELECT u FROM UploadedImage u  WHERE u.info.originName like :file_name and u.user.id=:u_id and u.delFlag=false and u.tag.id=:tag_id order by u.date desc") })
+        @NamedQuery(name = "UploadedImage.listByUIdAndFileName", query = "SELECT u FROM UploadedImage u  WHERE u.originName like :file_name and u.user.id=:u_id and u.delFlag=false order by u.date desc"),
+        @NamedQuery(name = "UploadedImage.listByUIdAndFileNameAndTag", query = "SELECT u FROM UploadedImage u  WHERE u.originName like :file_name and u.user.id=:u_id and u.delFlag=false and u.tag.id=:tag_id order by u.date desc") })
 public class UploadedImage implements Serializable {
 
     private static final long serialVersionUID = 1398371509051853854L;
@@ -38,6 +39,15 @@ public class UploadedImage implements Serializable {
     @JsonIgnore
     private User user;
 
+    @Column(name = "small_square_name")
+    private String smallSquareName;
+
+    /**
+     * 原始名字显示在title标签中
+     */
+    @Column(name = "origin_name")
+    private String originName;
+
     @ManyToOne
     @JoinColumn(name = "gallery_id")
     private Gallery gallery;
@@ -46,13 +56,14 @@ public class UploadedImage implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private ImageInfo info;
 
     /**
      * 图片存储在哪里
      */
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bucket_id")
     @JsonIgnore
     private StorageBucket storageBucket;
@@ -63,13 +74,8 @@ public class UploadedImage implements Serializable {
     @Column(name = "generated_code")
     private String generatedCode;
 
-    public String getGeneratedCode() {
-        return generatedCode;
-    }
-
-    public void setGeneratedCode(String generatedCode) {
-        this.generatedCode = generatedCode;
-    }
+    @Column(name = "generated_name")
+    private String generatedName;
 
     @Column
     @JsonIgnore
@@ -124,6 +130,38 @@ public class UploadedImage implements Serializable {
 
     public void setStorageBucket(StorageBucket storageBucket) {
         this.storageBucket = storageBucket;
+    }
+
+    public String getGeneratedName() {
+        return generatedName;
+    }
+
+    public void setGeneratedName(String generatedName) {
+        this.generatedName = generatedName;
+    }
+
+    public String getGeneratedCode() {
+        return generatedCode;
+    }
+
+    public void setGeneratedCode(String generatedCode) {
+        this.generatedCode = generatedCode;
+    }
+
+    public String getSmallSquareName() {
+        return smallSquareName;
+    }
+
+    public void setSmallSquareName(String smallSquareName) {
+        this.smallSquareName = smallSquareName;
+    }
+
+    public String getOriginName() {
+        return originName;
+    }
+
+    public void setOriginName(String originName) {
+        this.originName = originName;
     }
 
     @JsonIgnore

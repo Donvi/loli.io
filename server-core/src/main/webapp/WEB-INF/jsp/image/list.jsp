@@ -459,7 +459,7 @@
                             + '" class="image-list-table-single"><div class="image-list-table-single-img"><a href="${pageContext.request.contextPath}/img/m/'
                             + result[i].generatedCode
                             + '" target="_blank"><img class="image-list-table-show"></a></div><div class="img-name">'
-                            + result[i].info.originName
+                            + result[i].originName
                             + '</div><div class="image-list-table-single-control"><a class="btn-primary image-list-select-btn btn btn-xs">选择</a><a href="javascript:void(0)" title="'
                             + galTitle
                             + '" gid="'
@@ -467,10 +467,10 @@
                             + '" class="btn btn-xs btn-default image-list-gal-span">'
                             + galTitle
                             + '</a><a class="btn-danger image-list-delete-btn btn btn-xs">删除</a></div></div>');
-                        if (img.info.smallName) {
-                            obj.find("img").attr("src", redirectPage + img.info.smallSquareName);
+                        if (img.smallSquareName) {
+                            obj.find("img").attr("src", redirectPage + img.smallSquareName);
                         } else {
-                            obj.find("img").attr("src", redirectPage + img.info.generatedName);
+                            obj.find("img").attr("src", redirectPage + img.generatedName);
                         }
                         $(".image-list-table").append(obj);
                     }

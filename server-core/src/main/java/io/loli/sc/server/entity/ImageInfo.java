@@ -20,15 +20,16 @@ public class ImageInfo implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonIgnore
     private int id;
 
     @OneToOne(mappedBy="info")
     @JoinColumn(name = "image_id")
     @JsonIgnore
     private UploadedImage image;
-
+    @JsonIgnore
     private String ip;
-
+    @JsonIgnore
     private String ua;
 
     public String getIp() {
@@ -55,17 +56,9 @@ public class ImageInfo implements Serializable {
         this.description = desc;
     }
 
-    /**
-     * 原始名字显示在title标签中
-     */
-    @Column(name = "origin_name")
-    private String originName;
 
     @Column(name = "small_name")
     private String smallName;
-
-    @Column(name = "small_square_name")
-    private String smallSquareName;
 
     @Column(name = "middle_name")
     private String middleName;
@@ -73,11 +66,12 @@ public class ImageInfo implements Serializable {
     @Column(name = "large_name")
     private String largeName;
 
-    @Column(name = "generated_name")
-    private String generatedName;
 
     @Column(name = "internal_path")
+    @JsonIgnore
     private String internalPath;
+    
+    @JsonIgnore
     @Column(name = "content_type")
     private String contentType;
 
@@ -119,13 +113,7 @@ public class ImageInfo implements Serializable {
         this.description = description;
     }
 
-    public String getOriginName() {
-        return originName;
-    }
-
-    public void setOriginName(String originName) {
-        this.originName = originName;
-    }
+    
 
     public String getSmallName() {
         return smallName;
@@ -133,14 +121,6 @@ public class ImageInfo implements Serializable {
 
     public void setSmallName(String smallName) {
         this.smallName = smallName;
-    }
-
-    public String getSmallSquareName() {
-        return smallSquareName;
-    }
-
-    public void setSmallSquareName(String smallSquareName) {
-        this.smallSquareName = smallSquareName;
     }
 
     public String getMiddleName() {
@@ -157,14 +137,6 @@ public class ImageInfo implements Serializable {
 
     public void setLargeName(String largeName) {
         this.largeName = largeName;
-    }
-
-    public String getGeneratedName() {
-        return generatedName;
-    }
-
-    public void setGeneratedName(String generatedName) {
-        this.generatedName = generatedName;
     }
 
     public String getInternalPath() {

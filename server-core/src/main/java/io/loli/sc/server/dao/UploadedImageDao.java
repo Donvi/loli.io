@@ -62,10 +62,9 @@ public class UploadedImageDao {
 
     public int countByUId(int u_id) {
         return em
-                .createNamedQuery("UploadedImage.listByUId",
-                        UploadedImage.class).setParameter("u_id", u_id)
-                .getResultList().size();
-
+                .createQuery("select count(*) from UploadedImage where user_id=:u_id and delFlag=false",
+                        Long.class).setParameter("u_id", u_id)
+                .getSingleResult().intValue();
     }
 
     public List<UploadedImage> listByUIdAndFileName(int u_id, String fileName,
@@ -173,7 +172,7 @@ public class UploadedImageDao {
     public Long countByGalIdAndUId(int uid, Integer gid) {
         return em
                 .createQuery(
-                        "select count(*) from UploadedImage where delFlag=false and user.id=:uid and gallery.id=:gid order by id desc",
+                        "select count(*) from UploadedImage where delFlag=false and user.id=:uid and gallery.id=:gid",
                         Long.class).setParameter("uid", uid)
                 .setParameter("gid", gid).getSingleResult();
     }
@@ -200,10 +199,10 @@ public class UploadedImageDao {
         } else
             return em
                     .createQuery(
-                            "SELECT u FROM UploadedImage u WHERE u.user.id=:u_id and u.delFlag=false and u.originName like :originName order by u.date desc",
-                            UploadedImage.class).setParameter("u_id", u_id)
+                            "SELECT count(*) FROM UploadedImage u WHERE u.user.id=:u_id and u.delFlag=false and u.originName like :originName",
+                            Long.class).setParameter("u_id", u_id)
                     .setParameter("originName", "%" + name + "%")
-                    .getResultList().size();
+                    .getSingleResult().intValue();
     }
 
     public Long countByGalIdAndUId(int id, Integer gid, String name) {
@@ -212,7 +211,7 @@ public class UploadedImageDao {
         } else
             return em
                     .createQuery(
-                            "select count(*) from UploadedImage where delFlag=false and originName like :originName and user.id=:uid and gallery.id=:gid order by id desc",
+                            "select count(*) from UploadedImage where delFlag=false and originName like :originName and user.id=:uid and gallery.id=:gid",
                             Long.class).setParameter("uid", id)
                     .setParameter("originName", "%" + name + "%")
                     .setParameter("gid", gid).getSingleResult();

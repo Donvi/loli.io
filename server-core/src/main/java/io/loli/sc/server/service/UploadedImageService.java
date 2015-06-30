@@ -190,7 +190,7 @@ public class UploadedImageService {
                     new BufferedInputStream(new FileInputStream(file)), format),
                     f0);
             uploader.upload(f0, image.getInfo().getContentType());
-            image.getInfo().setSmallSquareName(f0.getName());
+            image.setSmallSquareName(f0.getName());
 
             File f1 = new File(tempDir, image.getGeneratedCode() + "s."
                     + format);
