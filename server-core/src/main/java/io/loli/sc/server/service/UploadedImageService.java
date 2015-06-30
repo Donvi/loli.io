@@ -283,7 +283,7 @@ public class UploadedImageService {
                     new IllegalArgumentException("图片" + img.getRedirectCode()
                             + "非该用户所有");
                 }
-                img.setDelFlag(true);
+                this.delete(iid);
             }
         }
     }
