@@ -1,6 +1,7 @@
 package io.loli.sc.server.service;
 
 import io.loli.sc.server.dao.GalleryDao;
+import io.loli.sc.server.dao.ImageInfoDao;
 import io.loli.sc.server.dao.UploadedImageDao;
 import io.loli.sc.server.entity.Gallery;
 import io.loli.sc.server.entity.StorageBucket;
@@ -35,6 +36,9 @@ public class UploadedImageService {
     @Inject
     @Named("imageDao")
     private UploadedImageDao ud;
+    
+    @Inject
+    private ImageInfoDao infod;
 
     @Inject
     private GalleryDao gd;
@@ -185,30 +189,29 @@ public class UploadedImageService {
             toFile(ThumbnailUtil.cutSqureWithResizeSmall(
                     new BufferedInputStream(new FileInputStream(file)), format),
                     f0);
-            uploader.upload(f0, image.getContentType());
-            image.setSmallSquareName(f0.getName());
+            uploader.upload(f0, image.getInfo().getContentType());
+            image.getInfo().setSmallSquareName(f0.getName());
 
             File f1 = new File(tempDir, image.getGeneratedCode() + "s."
                     + format);
             toFile(ThumbnailUtil.resizeSmall(new BufferedInputStream(
                     new FileInputStream(file)), format), f1);
-            uploader.upload(f1, image.getContentType());
-            image.setSmallName(f1.getName());
+            uploader.upload(f1, image.getInfo().getContentType());
+            image.getInfo().setSmallName(f1.getName());
 
             File f2 = new File(tempDir, image.getGeneratedCode() + "m."
                     + format);
             toFile(ThumbnailUtil.resizeMiddle(new BufferedInputStream(
                     new FileInputStream(file)), format), f2);
-            uploader.upload(f2, image.getContentType());
-            image.setMiddleName(f2.getName());
+            uploader.upload(f2, image.getInfo().getContentType());
+            image.getInfo().setMiddleName(f2.getName());
 
             File f3 = new File(tempDir, image.getGeneratedCode() + "l."
                     + format);
             toFile(ThumbnailUtil.resizeBig(new BufferedInputStream(
                     new FileInputStream(file)), format), f3);
-            uploader.upload(f3, image.getContentType());
-            image.setLargeName(f3.getName());
-
+            uploader.upload(f3, image.getInfo().getContentType());
+            image.getInfo().setLargeName(f3.getName());
             this.update(image);
         } catch (IOException e) {
             e.printStackTrace();

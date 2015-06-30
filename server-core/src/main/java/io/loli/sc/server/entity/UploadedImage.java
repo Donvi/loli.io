@@ -23,9 +23,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "uploaded_image")
 @NamedQueries(value = {
-    @NamedQuery(name = "UploadedImage.listByUId", query = "SELECT u FROM UploadedImage u  WHERE u.user.id=:u_id and u.delFlag=false order by u.date desc"),
-    @NamedQuery(name = "UploadedImage.listByUIdAndFileName", query = "SELECT u FROM UploadedImage u  WHERE u.originName like :file_name and u.user.id=:u_id and u.delFlag=false order by u.date desc"),
-    @NamedQuery(name = "UploadedImage.listByUIdAndFileNameAndTag", query = "SELECT u FROM UploadedImage u  WHERE u.originName like :file_name and u.user.id=:u_id and u.delFlag=false and u.tag.id=:tag_id order by u.date desc") })
+        @NamedQuery(name = "UploadedImage.listByUId", query = "SELECT u FROM UploadedImage u  WHERE u.user.id=:u_id and u.delFlag=false order by u.date desc"),
+        @NamedQuery(name = "UploadedImage.listByUIdAndFileName", query = "SELECT u FROM UploadedImage u  WHERE u.info.originName like :file_name and u.user.id=:u_id and u.delFlag=false order by u.date desc"),
+        @NamedQuery(name = "UploadedImage.listByUIdAndFileNameAndTag", query = "SELECT u FROM UploadedImage u  WHERE u.info.originName like :file_name and u.user.id=:u_id and u.delFlag=false and u.tag.id=:tag_id order by u.date desc") })
 public class UploadedImage implements Serializable {
 
     private static final long serialVersionUID = 1398371509051853854L;
@@ -46,12 +46,19 @@ public class UploadedImage implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
-    private String ip;
+    @OneToOne(cascade = CascadeType.ALL)
+    private ImageInfo info;
 
-    private String ua;
+    /**
+     * 图片存储在哪里
+     */
+    @OneToOne
+    @JoinColumn(name = "bucket_id")
+    @JsonIgnore
+    private StorageBucket storageBucket;
 
-    @Column(name = "content_type")
-    private String contentType;
+    @Column(name = "redirect_code")
+    private String redirectCode;
 
     @Column(name = "generated_code")
     private String generatedCode;
@@ -64,56 +71,17 @@ public class UploadedImage implements Serializable {
         this.generatedCode = generatedCode;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "tag_id")
-    @JsonIgnore
-    private Tag tag;
-
-    /**
-     * 图片描述显示在alt标签中
-     */
-    @Column
-    private String description;
-    /**
-     * 图片存储在哪里
-     */
-    @OneToOne
-    @JoinColumn(name = "bucket_id")
-    @JsonIgnore
-    private StorageBucket storageBucket;
-    /**
-     * 原始名字显示在title标签中
-     */
-    @Column(name = "origin_name")
-    private String originName;
-
-    @Column(name = "redirect_code")
-    private String redirectCode;
-
     @Column
     @JsonIgnore
     private String path;
 
-    @Column(name = "small_name")
-    private String smallName;
-
-    @Column(name = "small_square_name")
-    private String smallSquareName;
-
-    @Column(name = "middle_name")
-    private String middleName;
-
-    @Column(name = "large_name")
-    private String largeName;
-
-    @Column(name = "generated_name")
-    private String generatedName;
-
-    @Column(name = "internal_path")
-    private String internalPath;
-
     @Column(name = "del_flag")
     private Boolean delFlag = false;
+
+    @ManyToOne
+    @JoinColumn(name = "tag_id")
+    @JsonIgnore
+    private Tag tag;
 
     @Column
     private Boolean share = false;
@@ -134,36 +102,12 @@ public class UploadedImage implements Serializable {
         this.date = date;
     }
 
-    public String getDesc() {
-        return description;
-    }
-
-    public void setDesc(String desc) {
-        this.description = desc;
-    }
-
-    public String getOriginName() {
-        return originName;
-    }
-
-    public void setOriginName(String originName) {
-        this.originName = originName;
-    }
-
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getPath() {
@@ -191,46 +135,12 @@ public class UploadedImage implements Serializable {
         this.delFlag = delFlag;
     }
 
-    @JsonIgnore
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    @JsonIgnore
-    public String getUa() {
-        return ua;
-    }
-
-    public void setUa(String ua) {
-        this.ua = ua;
-    }
-
     public String getRedirectCode() {
         return redirectCode;
     }
 
     public void setRedirectCode(String redirectCode) {
         this.redirectCode = redirectCode;
-    }
-
-    public String getGeneratedName() {
-        return generatedName;
-    }
-
-    public void setGeneratedName(String generatedName) {
-        this.generatedName = generatedName;
-    }
-
-    public String getInternalPath() {
-        return internalPath;
-    }
-
-    public void setInternalPath(String internalPath) {
-        this.internalPath = internalPath;
     }
 
     public Tag getTag() {
@@ -241,14 +151,6 @@ public class UploadedImage implements Serializable {
         this.tag = tag;
     }
 
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
     public Boolean getShare() {
         return share;
     }
@@ -257,44 +159,20 @@ public class UploadedImage implements Serializable {
         this.share = share;
     }
 
-    public String getSmallName() {
-        return smallName;
-    }
-
-    public void setSmallName(String smallName) {
-        this.smallName = smallName;
-    }
-
-    public String getSmallSquareName() {
-        return smallSquareName;
-    }
-
-    public void setSmallSquareName(String smallSquareName) {
-        this.smallSquareName = smallSquareName;
-    }
-
-    public String getMiddleName() {
-        return middleName;
-    }
-
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
-    }
-
-    public String getLargeName() {
-        return largeName;
-    }
-
-    public void setLargeName(String largeName) {
-        this.largeName = largeName;
-    }
-
     public Gallery getGallery() {
         return gallery;
     }
 
     public void setGallery(Gallery gallery) {
         this.gallery = gallery;
+    }
+
+    public ImageInfo getInfo() {
+        return info;
+    }
+
+    public void setInfo(ImageInfo info) {
+        this.info = info;
     }
 
 }

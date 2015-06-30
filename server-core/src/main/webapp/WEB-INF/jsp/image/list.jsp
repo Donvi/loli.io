@@ -445,7 +445,7 @@
                     name : $("#search-name").val()
                 },
                 function(result) {
-                    var redirectPage = "<spring:message code='httpsRedirectPath'/>";
+                    var redirectPage = "<spring:message code='redirectPath'/>";
                     $(".image-list-table").html("");
                     for (i = 0; i < result.length; i++) {
                         var img = result[i];
@@ -459,7 +459,7 @@
                             + '" class="image-list-table-single"><div class="image-list-table-single-img"><a href="${pageContext.request.contextPath}/img/m/'
                             + result[i].generatedCode
                             + '" target="_blank"><img class="image-list-table-show"></a></div><div class="img-name">'
-                            + result[i].originName
+                            + result[i].info.originName
                             + '</div><div class="image-list-table-single-control"><a class="btn-primary image-list-select-btn btn btn-xs">选择</a><a href="javascript:void(0)" title="'
                             + galTitle
                             + '" gid="'
@@ -467,10 +467,10 @@
                             + '" class="btn btn-xs btn-default image-list-gal-span">'
                             + galTitle
                             + '</a><a class="btn-danger image-list-delete-btn btn btn-xs">删除</a></div></div>');
-                        if (img.smallName) {
-                            obj.find("img").attr("src", redirectPage + img.smallSquareName);
+                        if (img.info.smallName) {
+                            obj.find("img").attr("src", redirectPage + img.info.smallSquareName);
                         } else {
-                            obj.find("img").attr("src", redirectPage + img.generatedName);
+                            obj.find("img").attr("src", redirectPage + img.info.generatedName);
                         }
                         $(".image-list-table").append(obj);
                     }

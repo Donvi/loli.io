@@ -3,7 +3,7 @@
 <html>
 <jsp:directive.include file="../taglib.jsp" />
 <head>
-<title>${image.originName}-查看图片-萝莉图床</title>
+<title>${image.info.originName}-查看图片-萝莉图床</title>
 <link href="${pageContext.request.contextPath}/static/ext/uploader/style.css" rel="stylesheet" />
 <jsp:include page="../meta.jsp"></jsp:include>
 <jsp:include page="../static.jsp"></jsp:include>
@@ -144,9 +144,9 @@
         <div>
           <div class="image-show-body">
             <a target="_blank" href="<spring:message code="redirectPath"></spring:message>${image.redirectCode}"><img
-              src="<spring:message code="httpsRedirectPath"></spring:message>${image.redirectCode}" /></a>
+              src="<spring:message code="redirectPath"></spring:message>${image.redirectCode}" /></a>
             <h3 class="image-show-title">
-              <c:out value="${image.originName}"></c:out>
+              <c:out value="${image.info.originName}"></c:out>
             </h3>
           </div>
 

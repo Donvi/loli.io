@@ -2,6 +2,7 @@ package io.loli.sc.server.action;
 
 import io.loli.sc.server.entity.ClientToken;
 import io.loli.sc.server.entity.Gallery;
+import io.loli.sc.server.entity.ImageInfo;
 import io.loli.sc.server.entity.UploadedImage;
 import io.loli.sc.server.entity.User;
 import io.loli.sc.server.service.BucketService;
@@ -120,9 +121,12 @@ public class ImageClientUpload {
         @RequestParam(value = "gid", required = false) Integer gid) {
 
         UploadedImage imageObj = new UploadedImage();
+        ImageInfo info = new ImageInfo();
+        imageObj.setInfo(info);
+        info.setImage(imageObj);
         imageObj.setDate(new Date());
         if (email == null && desc == null && token == null) {
-            imageObj.setDesc(imageFile.getOriginalFilename());
+            info.setDesc(imageFile.getOriginalFilename());
         } else {
             if (!cts.checkTokenBelongToUser(token, email)) {
                 logger.info(email + "使用错误的token上传");
@@ -130,7 +134,7 @@ public class ImageClientUpload {
             } else {
                 imageObj.setUser(userService.findByEmail(email));
             }
-            imageObj.setOriginName(desc);
+            info.setOriginName(desc);
         }
         User user = null;
         if ((user = (User) request.getSession().getAttribute("user")) != null) {
@@ -146,12 +150,13 @@ public class ImageClientUpload {
         if (ip != null && LOCAL_HOST.equals(ip)) {
             ip = request.getHeader("X-Real-IP");
         }
-        imageObj.setIp(ip);
-        imageObj.setUa(request.getHeader("user-agent"));
+       
+        info.setIp(ip);
+        info.setUa(request.getHeader("user-agent"));
 
         String contentType = imageFile.getContentType();
         if (StringUtils.isNotBlank(contentType)) {
-            imageObj.setContentType(contentType);
+            info.setContentType(contentType);
         }
         String fileName = "";
         fileName = getFileName(imageFile);
@@ -171,19 +176,19 @@ public class ImageClientUpload {
 
         StorageUploader uploader = StorageUploader.newInstance(imageObj.getStorageBucket());
         imageObj.setPath(uploader.upload(file));
-        imageObj.setOriginName(imageFile.getOriginalFilename());
+        info.setOriginName(imageFile.getOriginalFilename());
 
-        imageObj.setGeneratedName(file.getName());
+        info.setGeneratedName(file.getName());
         imageObj.setRedirectCode(file.getName());
         imageObj.setGeneratedCode(file.getName().contains(".") ? file.getName().substring(0,
             file.getName().indexOf(".")) : file.getName());
-        imageObj.setInternalPath(imageObj.getStorageBucket().getInternalUrl() + "/" + file.getName());
+        info.setInternalPath(imageObj.getStorageBucket().getInternalUrl() + "/" + file.getName());
 
         uic.save(imageObj);
         if (imageObj.getUser() == null) {
-            logger.info("匿名上传文件:" + imageObj.getOriginName() + ", 链接为" + imageObj.getPath());
+            logger.info("匿名上传文件:" + info.getOriginName() + ", 链接为" + imageObj.getPath());
         } else {
-            logger.info(imageObj.getUser().getEmail() + "上传文件:" + imageObj.getOriginName() + ", 链接为"
+            logger.info(imageObj.getUser().getEmail() + "上传文件:" + info.getOriginName() + ", 链接为"
                 + imageObj.getPath());
         }
 
@@ -237,6 +242,9 @@ public class ImageClientUpload {
         try {
             User user = null;
             UploadedImage imageObj = new UploadedImage();
+            ImageInfo info = new ImageInfo();
+            info.setImage(imageObj);
+            imageObj.setInfo(info);
             if ((user = (User) request.getSession().getAttribute("user")) != null) {
                 imageObj.setUser(user);
             }
@@ -244,8 +252,8 @@ public class ImageClientUpload {
             if (ip != null && ip.equals("127.0.0.1")) {
                 ip = request.getHeader("X-Real-IP");
             }
-            imageObj.setIp(ip);
-            imageObj.setUa(request.getHeader("user-agent"));
+            info.setIp(ip);
+            info.setUa(request.getHeader("user-agent"));
             String ref = null;
             if ((ref = request.getHeader("REFERER")) != null) {
                 if (ref.contains("file")) {
@@ -259,20 +267,20 @@ public class ImageClientUpload {
 
             StorageUploader uploader = StorageUploader.newInstance(imageObj.getStorageBucket());
             imageObj.setPath(uploader.upload(file));
-            imageObj.setOriginName(file.getName());
+            info.setOriginName(file.getName());
 
-            imageObj.setGeneratedName(file.getName());
+            info.setGeneratedName(file.getName());
             imageObj.setRedirectCode(file.getName());
             imageObj.setGeneratedCode(file.getName().contains(".") ? file.getName().substring(0,
                 file.getName().indexOf(".")) : file.getName());
 
-            imageObj.setInternalPath(imageObj.getStorageBucket().getInternalUrl() + "/" + file.getName());
+            info.setInternalPath(imageObj.getStorageBucket().getInternalUrl() + "/" + file.getName());
 
             uic.save(imageObj);
             if (imageObj.getUser() == null) {
-                logger.info("匿名上传文件:" + imageObj.getOriginName() + ", 链接为" + imageObj.getPath());
+                logger.info("匿名上传文件:" + info.getOriginName() + ", 链接为" + imageObj.getPath());
             } else {
-                logger.info(imageObj.getUser().getEmail() + "上传文件:" + imageObj.getOriginName() + ", 链接为"
+                logger.info(imageObj.getUser().getEmail() + "上传文件:" + info.getOriginName() + ", 链接为"
                     + imageObj.getPath());
             }
             return "{\"origin\":\"" + path + "\",\"error\":\"" + "\",\"redirect\":\"" + imageObj.getRedirectCode()
