@@ -62,7 +62,7 @@ public class User implements Serializable {
     private List<Tag> tagList;
 
     @Column
-    private Boolean vip = true;
+    private Boolean vip = false;
 
     public Boolean getVip() {
         return vip;

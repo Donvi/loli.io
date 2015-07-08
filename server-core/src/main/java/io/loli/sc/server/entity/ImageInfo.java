@@ -17,6 +17,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity(name = "image_info")
 public class ImageInfo implements Serializable {
     private static final long serialVersionUID = -6571271267375935734L;
+    public static final Integer STATUS_NOT_VERIFIED = 0;
+    public static final Integer STATUS_VERIFIED = 1;
+    public static final Integer STATUS_ANIME_PORN = 2;
+    public static final Integer STATUS_ADULE_PORN = 3;
+    public static final Integer STATUS_ILLEGAL = 4;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,8 +36,8 @@ public class ImageInfo implements Serializable {
     private String ip;
     @JsonIgnore
     private String ua;
-
-    private Boolean verified = false;
+    @JsonIgnore
+    private Integer status = STATUS_NOT_VERIFIED;
 
     public String getIp() {
         return ip;
@@ -145,12 +150,13 @@ public class ImageInfo implements Serializable {
         this.internalPath = internalPath;
     }
 
-    public Boolean getVerified() {
-        return verified;
+    @Column(name = "status")
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setVerified(Boolean verified) {
-        this.verified = verified;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
 }

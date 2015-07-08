@@ -229,4 +229,13 @@ public class UploadedImageDao {
                         Long.class).setParameter("from", from)
                 .setParameter("to", to).getSingleResult();
     }
+
+    public List<UploadedImage> findByStatusAndDateAfter(Date date,
+            Integer status) {
+        return em
+                .createQuery(
+                        "from UploadedImage u where u.delFlag=false and u.info.status=:status and u.date>:date",
+                        UploadedImage.class).setParameter("status", status)
+                .setParameter("date", date).getResultList();
+    }
 }

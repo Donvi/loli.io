@@ -4,6 +4,7 @@ import io.loli.sc.server.dao.GalleryDao;
 import io.loli.sc.server.dao.ImageInfoDao;
 import io.loli.sc.server.dao.UploadedImageDao;
 import io.loli.sc.server.entity.Gallery;
+import io.loli.sc.server.entity.ImageInfo;
 import io.loli.sc.server.entity.StorageBucket;
 import io.loli.sc.server.entity.UploadedImage;
 import io.loli.sc.server.entity.User;
@@ -325,5 +326,17 @@ public class UploadedImageService {
 
     public List<UploadedImage> findByNameAndUser(String name, User user) {
         return ud.findByNameAndUser("%" + name + "%", user.getId());
+    }
+
+    public List<UploadedImage> findNotVerifiedInDays(int i) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.add(Calendar.DAY_OF_MONTH, -i);
+        
+        Date date = cal.getTime();
+        return ud.findByStatusAndDateAfter(date, ImageInfo.STATUS_NOT_VERIFIED);
+        
     }
 }
