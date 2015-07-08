@@ -12,7 +12,6 @@
 已经没有图片了!
 </c:if>
     <c:if test="${not empty img}">
-    ${img.generatedName}-${img.path}
         <img
             src="<spring:message code="redirectPath"></spring:message>${img.generatedName}">
 
