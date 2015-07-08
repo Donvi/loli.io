@@ -2,6 +2,7 @@ package io.loli.sc.server.dao;
 
 import io.loli.sc.server.entity.UploadedImage;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Named;
@@ -62,7 +63,8 @@ public class UploadedImageDao {
 
     public int countByUId(int u_id) {
         return em
-                .createQuery("select count(*) from UploadedImage where user_id=:u_id and delFlag=false",
+                .createQuery(
+                        "select count(*) from UploadedImage where user_id=:u_id and delFlag=false",
                         Long.class).setParameter("u_id", u_id)
                 .getSingleResult().intValue();
     }
@@ -110,10 +112,13 @@ public class UploadedImageDao {
                         UploadedImage.class).setParameter("code", code)
                 .getResultList();
     }
-    
-    public int countByCode(String code){
-        return em.createQuery("select count(*) from UploadedImage where generatedCode=:code", Long.class)
-            .setParameter("code", code).getSingleResult().intValue();
+
+    public int countByCode(String code) {
+        return em
+                .createQuery(
+                        "select count(*) from UploadedImage where generatedCode=:code",
+                        Long.class).setParameter("code", code)
+                .getSingleResult().intValue();
     }
 
     public List<UploadedImage> findByCode(String generatedCode) {
@@ -215,5 +220,13 @@ public class UploadedImageDao {
                             Long.class).setParameter("uid", id)
                     .setParameter("originName", "%" + name + "%")
                     .setParameter("gid", gid).getSingleResult();
+    }
+
+    public long countByDate(Date from, Date to) {
+        return em
+                .createQuery(
+                        "select count(*) from UploadedImage where date>:from and date<:to",
+                        Long.class).setParameter("from", from)
+                .setParameter("to", to).getSingleResult();
     }
 }

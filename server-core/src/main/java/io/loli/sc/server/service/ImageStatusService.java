@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.transaction.Transactional;
 
 @Named
 public class ImageStatusService {
@@ -19,5 +20,10 @@ public class ImageStatusService {
         List<ImageStatus> stats = imageStatusDao.findLast30Days();
         Collections.reverse(stats);
         return stats;
+    }
+
+    @Transactional
+    public void save(ImageStatus status) {
+        imageStatusDao.save(status);
     }
 }

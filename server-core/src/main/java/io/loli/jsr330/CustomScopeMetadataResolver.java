@@ -8,6 +8,7 @@ public class CustomScopeMetadataResolver extends Jsr330ScopeMetadataResolver {
     public CustomScopeMetadataResolver() {
         registerScope(RequestScoped.class, WebApplicationContext.SCOPE_REQUEST);
         registerScope(SessionScoped.class, WebApplicationContext.SCOPE_SESSION);
+        registerScope(ApplicationScoped.class, WebApplicationContext.SCOPE_APPLICATION);
     }
 
 }

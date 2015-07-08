@@ -23,7 +23,7 @@ public class ImageInfo implements Serializable {
     @JsonIgnore
     private int id;
 
-    @OneToOne(mappedBy="info")
+    @OneToOne(mappedBy = "info")
     @JoinColumn(name = "image_id")
     @JsonIgnore
     private UploadedImage image;
@@ -31,6 +31,8 @@ public class ImageInfo implements Serializable {
     private String ip;
     @JsonIgnore
     private String ua;
+
+    private Boolean verified = false;
 
     public String getIp() {
         return ip;
@@ -56,7 +58,6 @@ public class ImageInfo implements Serializable {
         this.description = desc;
     }
 
-
     @Column(name = "small_name")
     private String smallName;
 
@@ -66,11 +67,10 @@ public class ImageInfo implements Serializable {
     @Column(name = "large_name")
     private String largeName;
 
-
     @Column(name = "internal_path")
     @JsonIgnore
     private String internalPath;
-    
+
     @JsonIgnore
     @Column(name = "content_type")
     private String contentType;
@@ -113,8 +113,6 @@ public class ImageInfo implements Serializable {
         this.description = description;
     }
 
-    
-
     public String getSmallName() {
         return smallName;
     }
@@ -145,6 +143,14 @@ public class ImageInfo implements Serializable {
 
     public void setInternalPath(String internalPath) {
         this.internalPath = internalPath;
+    }
+
+    public Boolean getVerified() {
+        return verified;
+    }
+
+    public void setVerified(Boolean verified) {
+        this.verified = verified;
     }
 
 }

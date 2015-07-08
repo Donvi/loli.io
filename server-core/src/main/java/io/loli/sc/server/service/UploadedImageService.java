@@ -16,9 +16,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -36,7 +38,7 @@ public class UploadedImageService {
     @Inject
     @Named("imageDao")
     private UploadedImageDao ud;
-    
+
     @Inject
     private ImageInfoDao infod;
 
@@ -307,6 +309,18 @@ public class UploadedImageService {
                 }
             }
         }
+    }
+
+    public long countYesterday() {
+        Calendar param = Calendar.getInstance(TimeZone.getDefault());
+        param.add(Calendar.DAY_OF_MONTH, -1);
+        param.set(Calendar.HOUR_OF_DAY, 0);
+        param.set(Calendar.MINUTE, 0);
+        param.set(Calendar.SECOND, 0);
+        Date from = param.getTime();
+        param.add(Calendar.DAY_OF_MONTH, 1);
+        Date to = param.getTime();
+        return ud.countByDate(from, to);
     }
 
     public List<UploadedImage> findByNameAndUser(String name, User user) {

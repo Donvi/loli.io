@@ -18,7 +18,6 @@ public class BucketService {
 
     private StorageBucket[] imageArray;
     private StorageBucket[] fileArray;
-
     @Inject
     public BucketService(BucketDao bucketDao) {
         if (bucketList == null) {
