@@ -14,7 +14,8 @@
     <mvc:annotation-driven />
 
     <import resource="spring-security.xml" />
-
+    <bean class="io.loli.sc.server.cache.ImageCache"></bean>
+    <bean class="io.loli.sc.server.job.StatJob"></bean>
     <!-- 配置文件上传 -->
     <bean id="multipartResolver"
         class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

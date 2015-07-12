@@ -8,20 +8,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 
 import org.springframework.scheduling.annotation.Scheduled;
 
-@Named
-@Singleton
 public class StatJob {
     @Inject
     private UploadedImageService service;
 
     @Inject
     private ImageStatusService statusService;
-    
+
     @Scheduled(cron = "1 0 0 * * ?")
     // @Scheduled(cron = "*/20 * * * * ?")
     public void dailyStat() {
