@@ -22,6 +22,7 @@ public class ImageInfo implements Serializable {
     public static final Integer STATUS_ANIME_PORN = 2;
     public static final Integer STATUS_ADULE_PORN = 3;
     public static final Integer STATUS_ILLEGAL = 4;
+    public static final Integer STATUS_APPROVED = 5;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

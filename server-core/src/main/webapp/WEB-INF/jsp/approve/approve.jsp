@@ -20,11 +20,10 @@ img{
 </c:if>
     <c:if test="${not empty img}">
         <p>
-            <a href="${ctx}/approve/type?id=${img.id}&type=1">普通图片</a> <a
-                href="${ctx}/approve/type?id=${img.id}&type=2">二次元河蟹图</a>
-            <a href="${ctx}/approve/type?id=${img.id}&type=3">成人图片</a> <a
-                href="${ctx}/approve/type?id=${img.id}&type=4">其他违法</a>
-            上传时间:${img.date}
+            <a href="${ctx}/approve/type?id=${img.id}&type=1">通过</a>
+            <a href="${ctx}/approve/type?id=${img.id}&type=3">不通过</a> 
+            上传时间:${img.date}<br>
+        注: 二次元和谐图, 广告, 淘宝图等等 均通过； 真人色情, 赌博 以及其他违法图片均不通过
         </p>
         <img
             src="<spring:message code="redirectPath"></spring:message>${img.generatedName}">

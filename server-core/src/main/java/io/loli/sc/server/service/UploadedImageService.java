@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -334,9 +335,19 @@ public class UploadedImageService {
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.add(Calendar.DAY_OF_MONTH, -i);
-        
+
         Date date = cal.getTime();
         return ud.findByStatusAndDateAfter(date, ImageInfo.STATUS_NOT_VERIFIED);
-        
+
+    }
+
+    private static List<Integer> illegalStatus = new ArrayList<Integer>();
+    static {
+        illegalStatus.add(ImageInfo.STATUS_ADULE_PORN);
+        illegalStatus.add(ImageInfo.STATUS_ILLEGAL);
+    }
+
+    public List<UploadedImage> findIllegal() {
+        return ud.findByStatus(illegalStatus);
     }
 }

@@ -2,6 +2,7 @@ package io.loli.sc.server.dao;
 
 import io.loli.sc.server.entity.UploadedImage;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -237,5 +238,21 @@ public class UploadedImageDao {
                         "from UploadedImage u where u.delFlag=false and u.info.status=:status and u.date>:date",
                         UploadedImage.class).setParameter("status", status)
                 .setParameter("date", date).getResultList();
+    }
+
+    public List<UploadedImage> findByStatus(List<Integer> illegalStatus) {
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.add(Calendar.DAY_OF_MONTH, -4);
+        Date date = cal.getTime();
+        return em
+                .createQuery(
+                        "from UploadedImage u where u.delFlag=false and u.info.status in :list and u.date>:date",
+                        UploadedImage.class)
+                .setParameter("list", illegalStatus).setParameter("date", date)
+                .setMaxResults(20).getResultList();
     }
 }

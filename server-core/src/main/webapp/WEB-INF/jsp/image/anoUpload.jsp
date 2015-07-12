@@ -26,7 +26,9 @@
     <ul id="fileList">
     </ul>
   </form>
-  <div id="message"></div>
+  <div id="message">
+  禁止上传三次元和谐图, 发现即删
+  </div>
 </div>
 
 <div class="modal fade" id="htmlSelect">
