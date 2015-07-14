@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("approve")
 @Named
 public class ImageApproveAction {
-    @Inject
+    @Autowired
     private ImageCache imgCache;
     @Autowired
     private UploadedImageService imgService;
@@ -129,6 +129,6 @@ public class ImageApproveAction {
         logService.save(log);
 
         imgService.delete(id);
-        return this.list(model, session);
+        return this.adminList(model, session);
     }
 }

@@ -18,7 +18,7 @@ public class StatJob {
     @Inject
     private ImageStatusService statusService;
 
-    @Scheduled(cron = "1 0 0 * * ?")
+    @Scheduled(cron = "0 0 1 * * ?")
     // @Scheduled(cron = "*/20 * * * * ?")
     public void dailyStat() {
         long count = service.countYesterday();

@@ -17,8 +17,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -46,10 +48,12 @@ public class FileAction {
     private LinkService ls;
 
     @RequestMapping("list")
-    public String list(@RequestParam(value = "pid", required = false) Integer pid, HttpServletRequest request,
-        @RequestParam(value = "start", required = false) Integer startIndex,
-        @RequestParam(value = "max", required = false) Integer maxCount,
-        @RequestParam(value = "type", required = false) String type
+    public String list(
+            @RequestParam(value = "pid", required = false) Integer pid,
+            HttpServletRequest request,
+            @RequestParam(value = "start", required = false) Integer startIndex,
+            @RequestParam(value = "max", required = false) Integer maxCount,
+            @RequestParam(value = "type", required = false) String type
 
     ) {
         User user = (User) request.getSession().getAttribute("user");
@@ -83,7 +87,8 @@ public class FileAction {
 
         } else {
             folders = new ArrayList<>();
-            files = fis.listByUserIdAndFolderId(user.getId(), pid, startIndex, maxCount);
+            files = fis.listByUserIdAndFolderId(user.getId(), pid, startIndex,
+                    maxCount);
         }
         request.setAttribute("folderList", folders);
         request.setAttribute("fileList", files);
@@ -97,8 +102,9 @@ public class FileAction {
     }
 
     @RequestMapping("add")
-    public String add(@RequestParam(value = "pid") int parentId, @RequestParam(value = "name") String folderName,
-        HttpServletRequest request) {
+    public String add(@RequestParam(value = "pid") int parentId,
+            @RequestParam(value = "name") String folderName,
+            HttpServletRequest request) {
         FolderEntity parent = fs.findById(parentId);
         FolderEntity fe = new FolderEntity();
         fe.setParent(parent);
@@ -108,20 +114,23 @@ public class FileAction {
         User user = (User) request.getSession().getAttribute("user");
         fe.setUser(user);
         fs.save(fe);
-        return this.list(parentId, request, 0, FileListConfig.PAGE_DEFAULT_COUNT, "folder");
+        return this.list(parentId, request, 0,
+                FileListConfig.PAGE_DEFAULT_COUNT, "folder");
     }
 
     @RequestMapping("getPermentLinkByFileId")
     @ResponseBody
-    public String getPermentLinkByFileId(@RequestParam(value = "fileId") Integer fileId) {
+    public String getPermentLinkByFileId(
+            @RequestParam(value = "fileId") Integer fileId) {
         FileEntity file = fis.findById(fileId);
         LinkEntity link = ls.getPermLinkByFileId(file);
         return "pan/file/dl" + "/" + link.getPath();
     }
 
     @RequestMapping(value = "dl/{md5}")
-    public void download(@PathVariable(value = "md5") String md5, HttpServletRequest request,
-        HttpServletResponse response, HttpSession session) {
+    public void download(@PathVariable(value = "md5") String md5,
+            HttpServletRequest request, HttpServletResponse response,
+            HttpSession session) {
         FileEntity file = ls.findFileByPath(md5);
         Object obj = session.getAttribute("user");
         if (obj != null && ((User) obj).getId() == file.getUser().getId()) {
@@ -133,11 +142,14 @@ public class FileAction {
             }
             return;
         }
-        try (InputStream is = new BufferedInputStream(storageFolders.getFile(file.getKey()));
-            OutputStream os = new BufferedOutputStream(response.getOutputStream());) {
+        try (InputStream is = new BufferedInputStream(
+                storageFolders.getFile(file.getKey()));
+                OutputStream os = new BufferedOutputStream(
+                        response.getOutputStream());) {
             response.setContentLength(file.getLength().intValue());
             response.setContentType("application/octet-stream");
-            response.setHeader("Content-Disposition", "attachment;filename=" + file.getOriginName());
+            response.setHeader("Content-Disposition", "attachment;filename="
+                    + file.getOriginName());
             byte[] buffer = new byte[2048];
             for (int length = 0; (length = is.read(buffer)) > 0;) {
                 os.write(buffer, 0, length);
@@ -153,11 +165,8 @@ public class FileAction {
     @RequestMapping(value = "delete")
     @ResponseBody
     public String deleteByIds(@RequestParam("ids") String ids) {
-        List<Integer> toDelete = new ArrayList<Integer>();
-        for (String s : ids.split(",")) {
-            int i = Integer.parseInt(s);
-            toDelete.add(i);
-        }
+        List<Integer> toDelete = Arrays.asList(ids.split(",")).stream()
+                .map(str -> Integer.parseInt(str)).collect(Collectors.toList());
 
         fis.batchDelete(toDelete);
         return "success";

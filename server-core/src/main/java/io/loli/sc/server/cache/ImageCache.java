@@ -27,9 +27,9 @@ public class ImageCache {
     @Scheduled(cron = "0 */10 * * * ?")
     private void reloadCache() {
         List<UploadedImage> imgs = service.findNotVerifiedInDays(3);
-        for (UploadedImage img : imgs) {
+        imgs.forEach(img -> {
             imageMap.put(img.getId(), img);
-        }
+        });
     }
 
     public void removeFromCache(Integer i) {
