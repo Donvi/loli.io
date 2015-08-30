@@ -160,6 +160,7 @@ public class UserAction {
         if (trueUser != null
                 && user.getPassword().equals(trueUser.getPassword())) {
             session.setAttribute("user", trueUser);
+            session.setAttribute("login", "true");
             redirectAttributes.addFlashAttribute("info", "登录成功");
 
             return "redirect:/";

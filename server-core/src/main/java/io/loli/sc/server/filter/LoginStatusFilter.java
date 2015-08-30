@@ -3,10 +3,12 @@ package io.loli.sc.server.filter;
 import io.loli.sc.server.entity.LoginStatus;
 import io.loli.sc.server.entity.User;
 import io.loli.sc.server.service.LoginStatusService;
+import io.loli.util.string.MD5Util;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -37,8 +39,8 @@ public class LoginStatusFilter implements Filter {
     public void destroy() {
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-        ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response,
+            FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
@@ -62,7 +64,8 @@ public class LoginStatusFilter implements Filter {
                 Cookie[] cookies = req.getCookies();
                 if (cookies != null) {
 
-                    long count = Arrays.stream(req.getCookies()).filter(c -> c.getName().equals("token")).count();
+                    long count = Arrays.stream(req.getCookies())
+                            .filter(c -> c.getName().equals("token")).count();
                     Object statusObj = session.getAttribute("status");
                     LoginStatus ls = null;
 
@@ -73,26 +76,35 @@ public class LoginStatusFilter implements Filter {
                         session.setAttribute("status", ls);
                     }
 
+                    // 第一次登陆
                     if (ls == null) {
-                        ls = loginStatusService.getLoginStatusByUId(user.getId());
+                        ls = loginStatusService.getLoginStatusByUId(user
+                                .getId());
 
                         ls.setLastLogin(new Date());
                         loginStatusService.update(ls);
                     }
-                    if (count == 0) {
+                    if (count == 0 && session.getAttribute("login") != null) {
+                        ls.setToken(MD5Util.hash(UUID.randomUUID().toString()));
+                        ls.setLastLogin(new Date());
+                        loginStatusService.update(ls);
                         Cookie cookie = new Cookie("token", ls.getToken());
                         cookie.setMaxAge(3600 * 24 * 365);
                         cookie.setPath("/");
+                        session.removeAttribute("login");
                         res.addCookie(cookie);
                     } else {
-                        // 如果该用户已经登陆且客户端的token存在，且server的token不存在或者两者不相同时，重新生成一个token
-                        Cookie cookie = Arrays.stream(req.getCookies()).filter(c -> c.getName().equals("token"))
-                            .findFirst().get();
+                        // 如果该用户已经登陆且客户端的token存在，且server的token不存在或者两者不相同时，去掉cookie
+                        Cookie cookie = Arrays.stream(req.getCookies())
+                                .filter(c -> c.getName().equals("token"))
+                                .findFirst().get();
                         if (!cookie.getValue().equals(ls.getToken())) {
-                            cookie = new Cookie("token", ls.getToken());
-                            cookie.setMaxAge(3600 * 24 * 365);
+                            cookie = new Cookie("token", "");
+                            cookie.setMaxAge(0);
                             cookie.setPath("/");
                             res.addCookie(cookie);
+                            session.removeAttribute("user");
+                            session.removeAttribute("status");
                         }
 
                     }
@@ -102,16 +114,22 @@ public class LoginStatusFilter implements Filter {
                 // 如果没有登录, 寻找此token是否对应某个用户，如果是，则将此用户添加到session中
                 Cookie[] cookies = req.getCookies();
                 if (cookies != null) {
-                    Arrays.stream(req.getCookies()).filter(c -> c.getName().equals("token")).forEach(c -> {
-                        User user = loginStatusService.findByToken(c.getValue());
-                        if (user != null) {
-                            LoginStatus status = user.getLoginStatus();
-                            session.setAttribute("status", status);
-                            session.setAttribute("user", user);
-                            // 将该用户的登录时间保存进数据库中去
-                            loginStatusService.updateDate(user);
-                        }
-                }   );
+                    Arrays.stream(req.getCookies())
+                            .filter(c -> c.getName().equals("token"))
+                            .forEach(
+                                    c -> {
+                                        User user = loginStatusService
+                                                .findByToken(c.getValue());
+                                        if (user != null) {
+                                            LoginStatus status = user
+                                                    .getLoginStatus();
+                                            session.setAttribute("status",
+                                                    status);
+                                            session.setAttribute("user", user);
+                                            // 将该用户的登录时间保存进数据库中去
+                                            loginStatusService.updateDate(user);
+                                        }
+                                    });
                 }
             }
         } catch (Exception e) {
