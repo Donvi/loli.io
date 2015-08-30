@@ -3,12 +3,14 @@ package io.loli.sc.server.action;
 import io.loli.sc.server.entity.ClientToken;
 import io.loli.sc.server.entity.Gallery;
 import io.loli.sc.server.entity.ImageInfo;
+import io.loli.sc.server.entity.ImageUrl;
 import io.loli.sc.server.entity.UploadedImage;
 import io.loli.sc.server.entity.User;
 import io.loli.sc.server.service.BucketService;
 import io.loli.sc.server.service.ClientTokenService;
 import io.loli.sc.server.service.FileFetchService;
 import io.loli.sc.server.service.GalleryService;
+import io.loli.sc.server.service.ImageUrlService;
 import io.loli.sc.server.service.UploadedImageService;
 import io.loli.sc.server.service.UserService;
 import io.loli.sc.server.storage.StorageUploader;
@@ -18,13 +20,17 @@ import io.loli.util.string.ShortUrl;
 import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -34,6 +40,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -54,6 +61,9 @@ public class ImageClientUpload {
     private ClientTokenService cts;
 
     @Inject
+    private ImageUrlService urlService;
+
+    @Inject
     @Named("userService")
     private UserService us;
 
@@ -71,15 +81,18 @@ public class ImageClientUpload {
 
     private static final String LOCAL_HOST = "127.0.0.1";
 
-    @RequestMapping(value = { "/token" }, method = { RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value = { "/token" }, method = { RequestMethod.GET,
+            RequestMethod.POST })
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody ClientToken requestToken(@RequestParam(required = true) String email,
-        @RequestParam(required = true) String password) {
+    public @ResponseBody ClientToken requestToken(
+            @RequestParam(required = true) String email,
+            @RequestParam(required = true) String password) {
         User trueUser = us.findByEmail(email);
         String token = null;
         ClientToken ct = null;
         // 验证密码是否正确
-        if (trueUser != null && trueUser.getPassword().equalsIgnoreCase(password)) {
+        if (trueUser != null
+                && trueUser.getPassword().equalsIgnoreCase(password)) {
             ct = cts.findByEmail(email);
 
             if (ct != null) {
@@ -90,7 +103,8 @@ public class ImageClientUpload {
                 // 当没有该email的token时，新建一个token保存至数据库，然后返回
                 ct = new ClientToken();
                 // 用于md5加密的密文
-                String word = trueUser.getEmail() + new java.util.Date().getTime();
+                String word = trueUser.getEmail()
+                        + new java.util.Date().getTime();
                 try {
                     token = MD5Util.hash(word);
                 } catch (NoSuchAlgorithmException e) {
@@ -113,12 +127,14 @@ public class ImageClientUpload {
 
     @RequestMapping(value = { "/upload" }, method = { RequestMethod.POST })
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody UploadedImage upload(@RequestParam(value = "token", required = false) String token,
-        @RequestParam(value = "email", required = false) String email,
-        @RequestParam(value = "desc", required = false) String desc,
-        @RequestParam(value = "image", required = true) MultipartFile imageFile, HttpServletRequest request,
-        @RequestParam(value = "type", required = false) String type,
-        @RequestParam(value = "gid", required = false) Integer gid) {
+    public @ResponseBody UploadedImage upload(
+            @RequestParam(value = "token", required = false) String token,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "desc", required = false) String desc,
+            @RequestParam(value = "image", required = true) MultipartFile imageFile,
+            HttpServletRequest request,
+            @RequestParam(value = "type", required = false) String type,
+            @RequestParam(value = "gid", required = false) Integer gid) {
 
         UploadedImage imageObj = new UploadedImage();
         ImageInfo info = new ImageInfo();
@@ -150,7 +166,7 @@ public class ImageClientUpload {
         if (ip != null && LOCAL_HOST.equals(ip)) {
             ip = request.getHeader("X-Real-IP");
         }
-       
+
         info.setIp(ip);
         info.setUa(request.getHeader("user-agent"));
 
@@ -174,22 +190,27 @@ public class ImageClientUpload {
             imageObj.setStorageBucket(bucketService.randomImageBucket());
         }
 
-        StorageUploader uploader = StorageUploader.newInstance(imageObj.getStorageBucket());
+        StorageUploader uploader = StorageUploader.newInstance(imageObj
+                .getStorageBucket());
         imageObj.setPath(uploader.upload(file));
         imageObj.setOriginName(imageFile.getOriginalFilename());
 
         imageObj.setGeneratedName(file.getName());
         imageObj.setRedirectCode(file.getName());
-        imageObj.setGeneratedCode(file.getName().contains(".") ? file.getName().substring(0,
-            file.getName().indexOf(".")) : file.getName());
-        info.setInternalPath(imageObj.getStorageBucket().getInternalUrl() + "/" + file.getName());
+        imageObj.setGeneratedCode(file.getName().contains(".") ? file.getName()
+                .substring(0, file.getName().indexOf(".")) : file.getName());
+        info.setInternalPath(imageObj.getStorageBucket().getInternalUrl() + "/"
+                + file.getName());
+        String newPrefix = getNewPrefix();
+        imageObj.setNewPath(newPrefix + "/" + file.getName());
 
         uic.save(imageObj);
         if (imageObj.getUser() == null) {
-            logger.info("匿名上传文件:" + imageObj.getOriginName() + ", 链接为" + imageObj.getPath());
+            logger.info("匿名上传文件:" + imageObj.getOriginName() + ", 链接为"
+                    + imageObj.getPath());
         } else {
-            logger.info(imageObj.getUser().getEmail() + "上传文件:" + imageObj.getOriginName() + ", 链接为"
-                + imageObj.getPath());
+            logger.info(imageObj.getUser().getEmail() + "上传文件:"
+                    + imageObj.getOriginName() + ", 链接为" + imageObj.getPath());
         }
 
         service.execute(() -> {
@@ -198,11 +219,39 @@ public class ImageClientUpload {
         return imageObj;
     }
 
+    private volatile List<String> prefixs = new ArrayList<>();
+
+    private String getNewPrefix() {
+        if (prefixs == null || prefixs.isEmpty()) {
+            loadPrefixs();
+        }
+
+        if (prefixs == null || prefixs.isEmpty()) {
+            return "http://r.loli.io";
+        }
+        Random random = new Random();
+        Integer num = random.nextInt(prefixs.size());
+        if (num > prefixs.size() - 1) {
+            num = 0;
+        }
+        return prefixs.get(num);
+
+    }
+
+    @Scheduled(cron="0 0 * * * ?")
+    public void loadPrefixs() {
+        List<ImageUrl> urls = urlService.findAll();
+        prefixs = urls.stream().map((url) -> {
+            return url.getUrl();
+        }).collect(Collectors.toList());
+    }
+
     private String getFileName(MultipartFile imageFile) {
         String str = null;
 
         try {
-            String[] urls = ShortUrl.shortText(new Date().getTime() + imageFile.getOriginalFilename(), 6);
+            String[] urls = ShortUrl.shortText(
+                    new Date().getTime() + imageFile.getOriginalFilename(), 6);
             for (String url : urls) {
                 if (!uic.checkExists(url)) {
                     return url;
@@ -220,9 +269,11 @@ public class ImageClientUpload {
 
     @ResponseBody
     @RequestMapping(value = { "/fetch" }, method = { RequestMethod.POST })
-    public String fetch(@RequestParam(value = "path") String path, HttpServletRequest request) {
+    public String fetch(@RequestParam(value = "path") String path,
+            HttpServletRequest request) {
         if (StringUtils.isBlank(path)) {
-            return "{\"origin\":\"" + path + "\",\"error\":\"" + "图片url不能为空" + "\",\"redirect\":\"" + "\"}";
+            return "{\"origin\":\"" + path + "\",\"error\":\"" + "图片url不能为空"
+                    + "\",\"redirect\":\"" + "\"}";
         }
         File file = null;
         Future<File> future = service.submit(() -> {
@@ -233,7 +284,8 @@ public class ImageClientUpload {
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
             logger.error("Fetch image timeout:" + e);
-            return "{\"origin\":\"" + path + "\",\"error\":\"" + e.getMessage() + "\",\"redirect\":\"" + "\"}";
+            return "{\"origin\":\"" + path + "\",\"error\":\"" + e.getMessage()
+                    + "\",\"redirect\":\"" + "\"}";
         }
 
         if (file == null) {
@@ -265,28 +317,34 @@ public class ImageClientUpload {
                 imageObj.setStorageBucket(bucketService.randomImageBucket());
             }
 
-            StorageUploader uploader = StorageUploader.newInstance(imageObj.getStorageBucket());
+            StorageUploader uploader = StorageUploader.newInstance(imageObj
+                    .getStorageBucket());
             imageObj.setPath(uploader.upload(file));
             imageObj.setOriginName(file.getName());
 
             imageObj.setGeneratedName(file.getName());
             imageObj.setRedirectCode(file.getName());
-            imageObj.setGeneratedCode(file.getName().contains(".") ? file.getName().substring(0,
-                file.getName().indexOf(".")) : file.getName());
+            imageObj.setGeneratedCode(file.getName().contains(".") ? file
+                    .getName().substring(0, file.getName().indexOf(".")) : file
+                    .getName());
 
-            info.setInternalPath(imageObj.getStorageBucket().getInternalUrl() + "/" + file.getName());
+            info.setInternalPath(imageObj.getStorageBucket().getInternalUrl()
+                    + "/" + file.getName());
 
             uic.save(imageObj);
             if (imageObj.getUser() == null) {
-                logger.info("匿名上传文件:" + imageObj.getOriginName() + ", 链接为" + imageObj.getPath());
+                logger.info("匿名上传文件:" + imageObj.getOriginName() + ", 链接为"
+                        + imageObj.getPath());
             } else {
-                logger.info(imageObj.getUser().getEmail() + "上传文件:" + imageObj.getOriginName() + ", 链接为"
-                    + imageObj.getPath());
+                logger.info(imageObj.getUser().getEmail() + "上传文件:"
+                        + imageObj.getOriginName() + ", 链接为"
+                        + imageObj.getPath());
             }
-            return "{\"origin\":\"" + path + "\",\"error\":\"" + "\",\"redirect\":\"" + imageObj.getRedirectCode()
-                + "\"}";
+            return "{\"origin\":\"" + path + "\",\"error\":\""
+                    + "\",\"redirect\":\"" + imageObj.getRedirectCode() + "\"}";
         } catch (Exception e) {
-            return "{\"origin\":\"" + path + "\",\"error\":\"" + e.getMessage() + "\",\"redirect\":\"" + "\"}";
+            return "{\"origin\":\"" + path + "\",\"error\":\"" + e.getMessage()
+                    + "\",\"redirect\":\"" + "\"}";
         }
     }
 
@@ -300,7 +358,11 @@ public class ImageClientUpload {
         if (image.getOriginalFilename().contains(".")) {
             // 获取图片扩展名，jpg,png
             fileName += "."
-                + image.getOriginalFilename().substring(image.getOriginalFilename().lastIndexOf(".") + 1).toLowerCase();
+                    + image.getOriginalFilename()
+                            .substring(
+                                    image.getOriginalFilename()
+                                            .lastIndexOf(".") + 1)
+                            .toLowerCase();
         }
 
         File file = new File(System.getProperty("java.io.tmpdir"), fileName);

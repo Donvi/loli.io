@@ -105,13 +105,7 @@ $(function() {
 
                 },
                 done : function(e, data) {
-                    var filename = data.result.redirectCode;
-                    var prefix = $("#redirectPath").val();
-                    if (prefix) {
-                        filename = prefix + filename;
-                    } else {
-                        filename = data.result.path;
-                    }
+                    filename = data.result.newPath;
                     if (filename) {
                         data.context.find('label').eq(0).html("图片上传失败");
                     }

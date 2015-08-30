@@ -452,8 +452,7 @@
                         var galTitle = img.gallery ? img.gallery.title : "无";
                         var galId = img.gallery ? img.gallery.id : 0;
                         var obj = $('<div img-link="'
-                            + redirectPage
-                            + result[i].redirectCode
+                            + result[i].newPath
                             + '" img-id="'
                             + result[i].id
                             + '" class="image-list-table-single"><div class="image-list-table-single-img"><a href="${pageContext.request.contextPath}/img/m/'

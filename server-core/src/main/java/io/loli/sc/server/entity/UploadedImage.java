@@ -59,6 +59,9 @@ public class UploadedImage implements Serializable {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private ImageInfo info;
+    
+    
+    private String newPath;
 
     /**
      * 图片存储在哪里
@@ -211,6 +214,14 @@ public class UploadedImage implements Serializable {
 
     public void setInfo(ImageInfo info) {
         this.info = info;
+    }
+
+    public String getNewPath() {
+        return newPath;
+    }
+
+    public void setNewPath(String newPath) {
+        this.newPath = newPath;
     }
 
 }

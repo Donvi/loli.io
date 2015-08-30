@@ -27,21 +27,21 @@
             href = $("#tt-share-button").attr("link");
             href = href.replace("$(url)", encodeURI(window.location.href));
             href = href.replace("$(pic)",
-                encodeURI("<spring:message code="redirectPath"></spring:message>${image.redirectCode}"));
+                encodeURI("${image.newPath}"));
 
             $("#tt-share-button").attr("link", href);
 
             href = $("#renren-share-button").attr("link");
             href = href.replace("$(url)", encodeURI(window.location.href));
             href = href.replace("$(pic)",
-                encodeURI("<spring:message code="redirectPath"></spring:message>${image.redirectCode}"));
+                encodeURI("${image.newPath}"));
 
             $("#renren-share-button").attr("link", href);
 
             href = $("#qz-share-button").attr("link");
             href = href.replace("$(url)", encodeURI(window.location.href));
             href = href.replace("$(pic)",
-                encodeURI("<spring:message code="redirectPath"></spring:message>${image.redirectCode}"));
+                encodeURI("${image.newPath}"));
 
             $("#qz-share-button").attr("link", href);
 
@@ -143,8 +143,8 @@
       <div class="image-show-left">
         <div>
           <div class="image-show-body">
-            <a target="_blank" href="<spring:message code="redirectPath"></spring:message>${image.redirectCode}"><img
-              src="<spring:message code="redirectPath"></spring:message>${image.redirectCode}" /></a>
+            <a target="_blank" href="${image.newPath}"><img
+              src="${image.newPath}" /></a>
             <h3 class="image-show-title">
               <c:out value="${image.originName}"></c:out>
             </h3>
@@ -171,7 +171,7 @@
             <h3>分享到</h3>
             <a href="javascript:void(0)" id="weibo-share-button" class="image-share-buttons" target="_window"
               type="button"
-              link="http://service.weibo.com/share/share.php?url=$(url)&appkey=&title=%E5%88%86%E4%BA%AB%E5%9B%BE%E7%89%87&pic=<spring:message code="redirectPath"></spring:message>${image.redirectCode}&ralateUid=&language=">
+              link="http://service.weibo.com/share/share.php?url=$(url)&appkey=&title=%E5%88%86%E4%BA%AB%E5%9B%BE%E7%89%87&pic=${image.newPath}&ralateUid=&language=">
               <img src="${pageContext.request.contextPath}/static/img/weibo_share.png">
             </a> <a href="javascript:void(0)" id="tt-share-button" class="image-share-buttons" type="button"
               link="http://share.v.t.qq.com/index.php?c=share&a=index&url=$(url)&appkey=801547889&title=%E5%88%86%E4%BA%AB%E5%9B%BE%E7%89%87&pic=$(pic)&line1=">
@@ -192,26 +192,19 @@
           <div>
             <h3>原图链接</h3>
             <input class="image-show-url" readonly id="origin-input"
-              value="<spring:message code="redirectPath"></spring:message>${image.redirectCode}">
-            <button class="copy-buttons" type="button" class="btn btn-xs">复制</button>
-          </div>
-
-          <div>
-            <h3>Markdown</h3>
-            <input class="image-show-url" readonly id="md-input"
-              value="[LOLI.IO](<spring:message code="redirectPath"></spring:message>${image.redirectCode})">
+              value="${image.newPath}">
             <button class="copy-buttons" type="button" class="btn btn-xs">复制</button>
           </div>
           <div>
             <h3>HTML</h3>
             <input type="text" class="image-show-url" readonly id="html-input"
-              value="&lt;img src=&quot;<spring:message code="redirectPath"></spring:message>${image.redirectCode}&quot;&gt;">
+              value="&lt;img src=&quot;${image.newPath}&quot;&gt;">
             <button class="copy-buttons" type="button" class="btn btn-xs">复制</button>
           </div>
           <div>
             <h3>BB CODE</h3>
             <input class="image-show-url" id="bb-input" readonly
-              value="[IMG]<spring:message code="redirectPath"></spring:message>${image.redirectCode}[/IMG]">
+              value="[IMG]${image.newPath}[/IMG]">
             <button class="copy-buttons" type="button" class="btn btn-xs">复制</button>
           </div>
         </div>
