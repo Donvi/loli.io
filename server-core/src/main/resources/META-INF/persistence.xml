@@ -19,6 +19,7 @@
         <class>io.loli.sc.server.entity.Gallery</class>
         <class>io.loli.sc.server.entity.ImageStatus</class>
         <class>io.loli.sc.server.entity.ImageInfo</class>
+        <class>io.loli.sc.server.entity.ImageUrl</class>
     </persistence-unit>
 
 </persistence>

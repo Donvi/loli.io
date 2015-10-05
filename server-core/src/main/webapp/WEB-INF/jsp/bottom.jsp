@@ -7,11 +7,11 @@
     <div class="column">
       <a href="${pageContext.request.contextPath}/terms">使用条款</a> <a href="${pageContext.request.contextPath}/about">关于本站</a>
       <a href="https://github.com/chocotan/" target="_blank">源代码</a> <a href="mailto:loli@linux.com" target="_blank">联系我</a>
-      <a href="https://www.upyun.com/" target="_blank">又拍云</a>
-    </div>
+
     <div class="column">
       <a href="http://www.miitbeian.gov.cn/" target="_blank">苏ICP备14003163号</a> <a
-        href="${pageContext.request.contextPath}/stat">最近30天统计</a>
+        href="${pageContext.request.contextPath}/stat">最近30天统计</a> 
+        <a target="_blank" href="http://s.click.taobao.com/t?e=m%3D2%26s%3DiwFh6wIMySocQipKwQzePCperVdZeJviEViQ0P1Vf2kguMN8XjClAh3%2Fu8srW1SrLtEBlWvgMl4Ih4uhQWq3s7KAwxwteJmVwgh1ZDCa%2FEtp3Md9FsDQ7TDVuRn8ddiDsEVVC24eqozcHtRpEUy6RHVyxRO0gvF4QxJtmCgOmCLXl8Q7TEjBF%2BX11FSyvDCnQiv%2BJKjlPObGDmntuH4VtA%3D%3D">阿里云服务器</a>
     </div>
     <!-- cnzz -->
     <div style="display: none" align=center>

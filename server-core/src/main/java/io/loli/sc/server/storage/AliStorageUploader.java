@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -61,6 +62,7 @@ public class AliStorageUploader extends StorageUploader {
         if (StringUtils.isNotBlank(contentType)) {
             meta.setContentType(contentType);
         }
+        
         // 必须设置ContentLength
         meta.setContentLength(file.length());
         BufferedImage bi = null;

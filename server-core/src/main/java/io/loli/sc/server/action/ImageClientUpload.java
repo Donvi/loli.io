@@ -14,6 +14,7 @@ import io.loli.sc.server.service.ImageUrlService;
 import io.loli.sc.server.service.UploadedImageService;
 import io.loli.sc.server.service.UserService;
 import io.loli.sc.server.storage.StorageUploader;
+import io.loli.sc.server.util.MimeTypeUtils;
 import io.loli.util.string.MD5Util;
 import io.loli.util.string.ShortUrl;
 
@@ -192,7 +193,20 @@ public class ImageClientUpload {
 
         StorageUploader uploader = StorageUploader.newInstance(imageObj
                 .getStorageBucket());
-        imageObj.setPath(uploader.upload(file));
+        if (StringUtils.isBlank(contentType)
+                && StringUtils.isNotBlank(imageFile.getOriginalFilename())) {
+
+            if (imageFile.getOriginalFilename().contains(".")) {
+                // 获取图片扩展名，jpg,png
+                String ext = imageFile
+                        .getOriginalFilename()
+                        .substring(
+                                imageFile.getOriginalFilename()
+                                        .lastIndexOf(".") + 1).toLowerCase();
+                contentType = MimeTypeUtils.get(ext, "image/png");
+            }
+        }
+        imageObj.setPath(uploader.upload(file, contentType));
         imageObj.setOriginName(imageFile.getOriginalFilename());
 
         imageObj.setGeneratedName(file.getName());
@@ -238,9 +252,13 @@ public class ImageClientUpload {
 
     }
 
-    @Scheduled(cron="0 0 * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void loadPrefixs() {
         List<ImageUrl> urls = urlService.findAll();
+        urls.forEach((url) -> {
+            System.out.println(url);
+        });
+
         prefixs = urls.stream().map((url) -> {
             return url.getUrl();
         }).collect(Collectors.toList());

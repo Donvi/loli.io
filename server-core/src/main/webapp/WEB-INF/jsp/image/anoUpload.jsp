@@ -28,6 +28,17 @@
   </form>
   <div id="message">
   禁止上传三次元和谐图, 发现即删
+  <!-- 
+<span onclick="$('#ad1').toggle()">点击显示广告</span>
+<br/>
+<div id="ad1" style="display:none">
+<a target="_blank" href="http://s.click.taobao.com/t?e=m%3D2%26s%3DiwFh6wIMySocQipKwQzePCperVdZeJviEViQ0P1Vf2kguMN8XjClAh3%2Fu8srW1SrLtEBlWvgMl4Ih4uhQWq3s7KAwxwteJmVwgh1ZDCa%2FEtp3Md9FsDQ7TDVuRn8ddiDsEVVC24eqozcHtRpEUy6RHVyxRO0gvF4QxJtmCgOmCLXl8Q7TEjBF%2BX11FSyvDCnQiv%2BJKjlPObGDmntuH4VtA%3D%3D">阿里云服务器</a><br/>
+<a target="_blank" href="http://s.click.taobao.com/t?e=m%3D2%26s%3DBcOJGAMR6TIcQipKwQzePCperVdZeJviQih%2F7PxfOKS5VBFTL4hn2ZucfspN1emONMWYSf9G9hFJFNRdCHLms7kQN36CBUrATN02naDp%2FDydMBl3rtAdqYUXUqNpxWgfRIhXpwzXCM5Pf2BYFhAHdIysz9fDfhlinaYpFBIfC%2F2X26zqzz%2BB878WLl0Zspj2ZpWFiLpECNZkN0GiobiE1A2nm3%2FuorU57%2FH5sYsEelZtttBhO%2BYITVdRZF2jHoJEnQh24%2FJtJ%2BoTJefgHOmmlNtflAvjM8abze0VhgltO%2BCKFuWNrXFz2OyEPpK3NC5IO0XSNx0aiQf%2BVJHOp9nB5FT2UT8IaK0gX%2Bn4cTaP6N4oQ7jEcsqIRL1e5v7SBuLb6vRasSRRt1yVVe8AFAG7Df%2B4MLnMmUkApXCQL1NAJwlqoZ1G9c5k4CbrTpYdEPLbwzXyg2ChG7Tihki54yJReFLQZWyCs%2FzNOeU%2FnFL59PL586cEnrXYwx3He9F8Mg9ZIYULNg46oBA%3D">舰娘周边</a>
+<br/>
+<a target="_blank" href="http://s.click.taobao.com/t?e=m%3D2%26s%3DR94942WKtcwcQipKwQzePCperVdZeJviLKpWJ%2Bin0XJRAdhuF14FMak4WT3U%2BZCMRitN3%2FurF3ygoD%2B6rvgpap6jU6cJqOrX530Kzx%2Fjj%2FJqa%2Bjle0uCA13HdI9gRVOxnynZ4bvuOIT7d6VSwIt3C90OMSgyreEIcnjQKEJbkmpQDwcz2G5csFaEkEjWuZ1mxzVx0V54fkzFNGwSJBXnc1YOKPQtLPuUAthOEYOua8tPnvuA191OCBuKzV78Y%2FFY1dL4vabr5mQhhQs2DjqgEA%3D%3D">动漫抱枕</a>
+<br/>
+</div>
+ -->
   </div>
 </div>
 
