@@ -3,10 +3,16 @@
 
 [![Build Status](https://drone.io/github.com/chocotan/sc-server/status.png)](https://drone.io/github.com/chocotan/sc-server/latest)
 
+
+不再维护，建图床请访问 https://github.com/chocotan/lolibox
+
+
+
+
 一个使用阿里云OSS/又拍云/七牛云作为存储的图床~还处于开发中
 欢迎使用https://loli.io
 
-> 以下内容已过期，建图床请访问 https://github.com/chocotan/lolibox
+
 
 ### 运行环境
 1. Java 1.8
