@@ -4,7 +4,7 @@
 [![Build Status](https://drone.io/github.com/chocotan/sc-server/status.png)](https://drone.io/github.com/chocotan/sc-server/latest)
 
 
-不再维护，建图床请访问 https://github.com/chocotan/lolibox
+## 不再维护啦，建图床请访问 https://github.com/chocotan/lolibox
 
 
 
